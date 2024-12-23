@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lastik İlanı Yayınla</title>
+    <style>
+        :root {
+            --primary-color: #e94e77;
+            --secondary-color: #f4f4f4;
+            --text-color: #333;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .step {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select,
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        select {
+            appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007CB2%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat;
+            background-position: right 10px top 50%;
+            background-size: 12px auto;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #d03d66;
+        }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background-color: #ddd;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .progress {
+            height: 100%;
+            background-color: var(--primary-color);
+            border-radius: 5px;
+            transition: width 0.3s;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Lastik İlanı Yayınla</h1>
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+
+
+
+        <form id="adForm" action="/publish" method="POST" enctype="multipart/form-data">
+            <div class="step" id="step1">
+                <h2>Adım 1: Temel Bilgiler</h2>
+                <div class="form-group">
+                    <label for="category">Kategori:</label>
+                    <select id="category" name="category" required>
+                        <option value="Lastik" selected>Lastik</option>
+                        <option value="Jant">Jant</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="usage">Kullanım:</label>
+                    <select id="usage" name="usage" required>
+                        <option value="Kış" selected>Kış</option>
+                        <option value="Yaz">Yaz</option>
+                        <option value="4 Mevsim">4 Mevsim</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="type">Türü:</label>
+                    <select id="type" name="type" required>
+                        <option value="Otomobil" selected>Otomobil</option>
+                        <option value="SUV">SUV</option>
+                        <option value="Kamyonet">Kamyonet</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="step" id="step2">
+                <h2>Adım 2: Ürün Detayları</h2>
+                <div class="form-group">
+                    <label for="size">Ebat/Boyut:</label>
+                    <select id="size" name="size" required>
+
+                        <%- include('options') %>
+
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="brand">Marka:</label>
+                    <input type="text" id="brand" name="brand" value="Goodyear" required>
+                </div>
+                <div class="form-group">
+                    <label for="productionYear">Üretim Yılı:</label>
+                    <input type="number" id="productionYear" name="productionYear" value="2020" required>
+                </div>
+                <div class="form-group">
+                    <label for="loadIndex">Yük Endeksi:</label>
+                    <input type="text" id="loadIndex" name="loadIndex" value="95" required>
+                </div>
+                <div class="form-group">
+                    <label for="speedIndex">Hız Endeksi:</label>
+                    <input type="text" id="speedIndex" name="speedIndex" value="V" required>
+                </div>
+            </div>
+
+            <div class="step" id="step3">
+                <h2>Adım 3: Satış Detayları</h2>
+                <div class="form-group">
+                    <label for="price">Fiyat (TL):</label>
+                    <input type="number" id="price" name="price" value="9750" required>
+                </div>
+                <div class="form-group">
+                    <label for="location">Konum:</label>
+                    <input type="text" id="location" name="location" value="İstanbul / Bakırköy / Cevizlik Mah."
+                        required>
+                </div>
+                <div class="form-group">
+                    <label for="seller">Kimden:</label>
+                    <select id="seller" name="seller" required>
+                        <option value="Sahibinden" selected>Sahibinden</option>
+                        <option value="Galeriden">Galeriden</option>
+                        <option value="Yetkili Bayiden">Yetkili Bayiden</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="usedTyre">Çıkma Lastik:</label>
+                    <select id="usedTyre" name="usedTyre" required>
+                        <option value="Evet" selected>Evet</option>
+                        <option value="Hayır">Hayır</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="exchange">Takas:</label>
+                    <select id="exchange" name="exchange" required>
+                        <option value="Evet">Evet</option>
+                        <option value="Hayır" selected>Hayır</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="condition">Durumu:</label>
+                    <select id="condition" name="condition" required>
+                        <option value="İkinci El" selected>İkinci El</option>
+                        <option value="Sıfır">Sıfır</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="step" id="step4">
+                <h2>Adım 4: Görsel ve Onay</h2>
+                <div class="form-group">
+                    <label for="image">Resim Yükle:</label>
+                    <input type="file" id="image" name="image" accept=".jpg, .jpeg, .png" required />
+                </div>
+                <div class="form-group">
+                    <label for="adNumber">İlan No:</label>
+                    <input type="text" id="adNumber" name="adNumber" value="1214223395" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="adDate">İlan Tarihi:</label>
+                    <input type="text" id="adDate" name="adDate" value="07 Aralık 2024" readonly>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button type="button" id="prevBtn" onclick="nextPrev(-1)" disabled>Önceki</button>
+                <button type="button" id="nextBtn" onclick="nextPrev(1)">Sonraki</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('adForm').addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent the form from submitting initially
+
+            // Get the file input element
+            const fileInput = document.getElementById('image');
+            const file = fileInput.files[0]; // Get the selected file
+
+            // Log the file details for debugging
+            console.log('File selected:', file);
+            console.log('File type:', file ? file.type : 'No file selected');
+
+            // Validate file type
+            const allowedTypes = ['image/jpeg', 'image/png'];
+
+            // Check if file is selected
+            if (!file) {
+                alert("No file selected.");
+                console.log('No file selected. Form submission blocked.');
+                return; // Prevent form submission if no file
+            }
+
+            // Check if file type is allowed
+            if (!allowedTypes.includes(file.type)) {
+                alert("Error: Only JPG, JPEG, and PNG files are allowed.");
+                console.log('Invalid file type:', file.type);
+                return; // Prevent form submission if invalid file type
+            }
+
+            // If valid file, submit form data
+            const formData = new FormData(this); // Prepare the form data to send
+            fetch('/publish', {
+                method: 'POST',
+                body: formData,
+            })
+                .then(response => {
+                    console.log('Response received:', response);
+                    if (!response.ok) {
+                        return response.json(); // Get the error message if response is not OK
+                    }
+                    return response; // Continue if successful
+                })
+                .then(data => {
+                    console.log('Response data:', data);
+                    if (data && data.error) {
+                        alert("Error: " + data.error); // Display error in an alert
+                    } else {
+                        window.location.href = '/publish-success'; // Redirect on success
+                    }
+                })
+                .catch(error => {
+                    alert("An unexpected error occurred: " + error.message);
+                    console.error("Error:", error);
+                });
+        });
+
+
+        let currentStep = 0;
+        const steps = document.querySelectorAll('.step');
+        const form = document.getElementById('adForm');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const progress = document.getElementById('progress');
+
+        function showStep(n) {
+            steps[currentStep].classList.remove('active');
+            steps[n].classList.add('active');
+            currentStep = n;
+
+            if (currentStep === 0) {
+                prevBtn.disabled = true;
+            } else {
+                prevBtn.disabled = false;
+            }
+
+            if (currentStep === steps.length - 1) {
+                nextBtn.innerHTML = 'Yayınla';
+            } else {
+                nextBtn.innerHTML = 'Sonraki';
+            }
+
+            updateProgress();
+        }
+
+        function nextPrev(n) {
+            if (n === 1 && !validateStep()) return false;
+
+            if (currentStep + n >= steps.length) {
+                form.submit();
+                return false;
+            }
+
+            showStep(currentStep + n);
+        }
+
+        function validateStep() {
+            const inputs = steps[currentStep].querySelectorAll('input, select');
+            let valid = true;
+            inputs.forEach(input => {
+                if (!input.checkValidity()) {
+                    input.reportValidity();
+                    valid = false;
+                }
+            });
+            return valid;
+        }
+
+        function updateProgress() {
+            const percent = ((currentStep + 1) / steps.length) * 100;
+            progress.style.width = percent + '%';
+        }
+
+        showStep(currentStep);
+    </script>
+</body>
+
+</html>

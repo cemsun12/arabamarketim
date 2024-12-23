@@ -1,0 +1,18 @@
+<div class="brands-grid">
+    <% if (brands && brands.length> 0) { %>
+        <% brands.forEach(brand=> { %>
+            <div class="brand-card">
+                <a href="/models/<%= brand.name %>">
+                    <img src="<%= brand.logo || '/placeholder.png' %>" alt="<%= brand.name %>">
+                    <div class="brand-info">
+                        <h3>
+                            <%= brand.name %>
+                        </h3>
+                    </div>
+                </a>
+            </div>
+            <% }); %>
+                <% } else { %>
+                    <p>No brands available.</p>
+                    <% } %>
+</div>

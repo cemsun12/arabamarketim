@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4 Pieces 205/55/16 Pirelli Winter Tires - Almost New</title>
+    <style>
+        :root {
+            --primary-color: #333;
+            --secondary-color: #666;
+            --accent-color: #e31837;
+            --border-color: #e0e0e0;
+            --background-gray: #f8f8f8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            color: var(--primary-color);
+            line-height: 1.6;
+            background-color: #fff;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .breadcrumb {
+            padding: 10px 0;
+            color: var(--secondary-color);
+            font-size: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .breadcrumb a {
+            color: var(--secondary-color);
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .product-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .product-images {
+            position: relative;
+        }
+
+        .main-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border: 1px solid var(--border-color);
+        }
+
+        .thumbnails {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .thumbnail {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+        }
+
+        .thumbnail:hover {
+            border-color: var(--accent-color);
+        }
+
+        .product-info {
+            background-color: var(--background-gray);
+            padding: 20px;
+            border-radius: 4px;
+        }
+
+        .price {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .contact-info {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .contact-button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: var(--accent-color);
+            color: var(--primary-color);
+            text-align: center;
+            text-decoration: none;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .contact-button:hover {
+            opacity: 0.9;
+        }
+
+        .specifications {
+            margin-top: 30px;
+        }
+
+        .specifications h2 {
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+        .specs-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .specs-table tr {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .specs-table th,
+        .specs-table td {
+            padding: 12px;
+            text-align: left;
+        }
+
+        .specs-table th {
+            width: 30%;
+            color: var(--secondary-color);
+            font-weight: normal;
+            background-color: var(--background-gray);
+        }
+
+        .seller-info {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: var(--background-gray);
+            border-radius: 4px;
+        }
+
+        .seller-info h2 {
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .seller-details p {
+            margin-bottom: 10px;
+        }
+
+        .profile-icon {
+            background: none;
+            border: none;
+            padding: 0;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        /* Profile image */
+        .profile-icon img {
+            width: 40px;
+            /* Adjust size */
+            height: 40px;
+            /* Adjust size */
+            border-radius: 50%;
+            /* Makes the image circular */
+            object-fit: cover;
+            /* Ensures proper scaling */
+        }
+
+        .profile-icon:hover+.dropdown,
+        .dropdown:hover {
+            display: block;
+            /* Show dropdown when the icon is hovered */
+        }
+
+        /* Dropdown menu styling */
+        .dropdown {
+            display: none;
+            /* Hidden by default */
+            position: absolute;
+            top: 100%;
+            /* Adjust to position below the profile icon */
+            right: 0;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            min-width: 150px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        /* Links inside the dropdown */
+        .dropdown a {
+            display: block;
+            padding: 10px 15px;
+            color: black;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background-color 0.2s ease;
+            cursor: pointer;
+            /* Ensures links are clickable */
+        }
+
+        /* Hover effect for dropdown links */
+        .dropdown a:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* Show dropdown on hover */
+        .profile-container:hover .dropdown {
+            display: block;
+        }
+
+        .dropdown a {
+            display: block;
+            padding: 10px 15px;
+            text-decoration: none;
+            color: #333;
+            transition: background-color 0.3s;
+        }
+
+        .dropdown a:hover {
+            background-color: #f5f5f5;
+        }
+
+        .profile-container {
+            position: relative;
+            display: flex;
+            margin-left: 15px;
+            margin-right: 15px;
+            align-items: center;
+
+        }
+
+        /* Profile button */
+        .profile-icon {
+            background: none;
+            border: none;
+            padding: 0;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        /* Profile image */
+        .profile-icon img {
+            width: 40px;
+            /* Adjust size */
+            height: 40px;
+            /* Adjust size */
+            border-radius: 50%;
+            /* Makes the image circular */
+            object-fit: cover;
+            /* Ensures proper scaling */
+        }
+
+        .profile-icon:hover+.dropdown,
+        .dropdown:hover {
+            display: block;
+            /* Show dropdown when the icon is hovered */
+        }
+
+        .footer {
+            background-color: #333;
+            color: #fff;
+            padding: 40px 0;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+        }
+
+        .footer-section h3 {
+            color: #e31837;
+            margin-bottom: 20px;
+        }
+
+        .footer-section ul {
+            list-style-type: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-section ul li a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .footer-section ul li a:hover {
+            text-decoration: underline;
+        }
+
+        .header-buttons a {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: #e94e77;
+            color: #fff;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .header-buttons a:hover {
+            background-color: #d03f64;
+        }
+
+        .header {
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px 0;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-buttons {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .header-buttons a {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #e31837;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-left: 10px;
+        }
+
+        .header-buttons .negative {
+            background-color: #dc3545;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #e31837;
+            text-decoration: none;
+        }
+
+        .search-bar {
+            flex-grow: 1;
+            margin: 0 20px;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #e31837;
+            /* Primary blue color */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            margin-top: 10px;
+            margin-left: 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            /* Rounded corners */
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #ed6277;
+            /* Darker blue on hover */
+        }
+
+        button:focus {
+            outline: none;
+            /* Remove focus outline */
+        }
+
+        .seller-profile-image {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .seller-profile-image img {
+            border-radius: 50%;
+            width: 100px;
+            /* Adjust size as needed */
+            height: 100px;
+            object-fit: cover;
+        }
+
+        .view-all-ads {
+            color: #007BFF;
+            /* Blue color */
+            text-decoration: none;
+            /* Remove underline */
+            font-weight: bold;
+            /* Bold text */
+            font-size: 16px;
+            /* Adjust font size */
+            transition: color 0.3s ease;
+            /* Smooth color transition */
+        }
+
+        .view-all-ads:hover {
+            color: #0056b3;
+            /* Darker blue on hover */
+            text-decoration: underline;
+            /* Underline on hover */
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .social-icon {
+            width: 80px !important;
+            /* Increased size */
+            height: 80px !important;
+            /* Increased size */
+            display: inline-block;
+            object-fit: contain;
+            /* Ensures proper image scaling */
+        }
+
+
+        @media (max-width: 768px) {
+            .product-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+
+
+<body>
+
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="/" class="logo">arabamarketim.com</a>
+                <div class="search-bar">
+                    <input type="text" placeholder="Marka veya model ara...">
+                </div>
+                <div class="header-buttons">
+                    <a href="/publish">İlan Ver</a>
+                </div>
+
+                <% if (user) { %>
+                    <!-- Display profile container if authenticated -->
+                    <div class="profile-container">
+                        <button class="profile-icon">
+                            <img src="<%= user.fotourl %>" alt="Profile Picture" />
+                        </button>
+                        <div class="dropdown">
+                            <a href="/profile">Bilgilerim</a>
+                            <a href="/logout">Çıkış Yap</a>
+                        </div>
+                    </div>
+                    <% } else { %>
+                        <!-- Display "Giriş Yap/Kayıt Ol" buttons if not authenticated -->
+                        <button onclick="window.location.href='/lander'">Giriş Yap / Kayıt Ol</button>
+                        <% } %>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="/">Home</a> >
+            <a href="/auto-parts">Auto Parts</a> >
+            <a href="/tires">Tires</a> >
+            <%= product.brand || "Product Title" %>
+        </div>
+
+        <div class="product-container">
+            <div class="product-images">
+                <!-- Main Product Image -->
+                <img src="/images/placeholder.png" alt="Ürün Resmi" class="main-image"
+                    data-src="<%= product.imageUrl %>" onload="this.src=this.getAttribute('data-src');"
+                    onerror="this.onerror=null; this.src='/images/placeholder.png';" loading="lazy">
+
+                <!-- Thumbnail Images -->
+                <div class="thumbnails">
+                    <img src="<%= product.imageUrl || '/placeholder.svg?height=80&width=80' %>" alt="Tire View 1"
+                        class="thumbnail">
+                </div>
+            </div>
+
+            <div class="product-info">
+                <% if (seller.fotourl) { %>
+                    <div class="seller-profile-image">
+                        <img src="<%= seller.fotourl %>" alt="<%= seller.name || 'Seller Profile' %>">
+                    </div>
+                    <% } else { %>
+                        <div class="seller-profile-image">
+                            <img src="/images/default-profile.png" alt="Default Profile">
+                        </div>
+                        <% } %>
+
+                            <div class="contact-info">
+                                <a href="tel:<%= seller.phone || '1234567890' %>" class="contact-button"
+                                    style="color: white;">Satıcıyı Ara</a>
+                                <a href="https://wa.me/<%= seller.phone || '1234567890' %>" class="contact-button"
+                                    style="background-color: #fff; border: 1px solid var(--border-color);"
+                                    target="_blank">
+                                    <img src="/images/whatsapp.png" alt="Message Icon"
+                                        style="width: 24px; height: 24px; vertical-align: middle; margin-right: 8px;">
+                                    Satıcıya Mesaj At
+                                </a>
+                            </div>
+
+                            <div class="seller-details">
+                                <p><strong>İsim:</strong>
+                                    <%= seller.name || 'Unknown' %>
+                                </p>
+                                <p><strong>Konum:</strong>
+                                    <%= product.location || 'Unknown' %>
+                                </p>
+                                <p><strong>Tarih:</strong>
+                                    <%= product.adDate || 'Unknown' %>
+                                </p>
+                                <p><strong>İlan Numarası:</strong>
+                                    <%= product.adNumber || 'N/A' %>
+                                </p>
+                                <p>
+                                    <a href="#" class="view-all-ads">Satıcının Tüm İlanları</a>
+                                </p>
+                            </div>
+
+                            <div class="social-links">
+                                <% if (seller.instagram) { %>
+                                    <a href="<%= seller.instagram %>" target="_blank">
+                                        <img src="/images/instagram-icon.webp" alt="Instagram"
+                                            style="width: 24px; height: 24px; margin-right: 10px;">
+                                    </a>
+                                    <% } %>
+                                        <% if (seller.facebook) { %>
+                                            <a href="<%= seller.facebook %>" target="_blank">
+                                                <img src="/images/facebook-icon.png" alt="Facebook"
+                                                    style="width: 24px; height: 24px;">
+                                            </a>
+                                            <% } %>
+                            </div>
+            </div>
+        </div>
+
+        <div class="specifications">
+            <h2>Detaylar</h2>
+            <table class="specs-table">
+                <tr>
+                    <th>Fiyat</th>
+                    <td>
+                        <%= product.price || 'Unknown' %> TL
+                    </td>
+                </tr>
+                <tr>
+                    <th>Marka</th>
+                    <td>
+                        <%= product.brand || 'Unknown' %>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Boyut</th>
+                    <td>
+                        <%= product.size || 'Unknown' %>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Durumu</th>
+                    <td>
+                        <%= product.condition || 'Unknown' %>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Türü</th>
+                    <td>
+                        <%= product.type || 'Unknown' %>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Üretim Yılı</th>
+                    <td>
+                        <%= product.productionYear || 'Unknown' %>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Yük İndeksi</th>
+                    <td>
+                        <%= product.loadIndex || 'Unknown' %>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Hız İndeksi</th>
+                    <td>
+                        <%= product.speedIndex || 'Unknown' %>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Takas</th>
+                    <td>
+                        <%= product.exchange || 'Unknown' %>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Kullanım Durumu</th>
+                    <td>
+                        <%= product.usedTyre || 'Unknown' %>
+                    </td>
+                </tr>
+            </table>
+
+            <div id="map" style="height: 400px; width: 100%; margin-top: 20px;"></div>
+        </div>
+    </div>
+
+
+
+    <%- include('footer') %>
+
+        <script>
+            // Simple image gallery functionality
+            const thumbnails = document.querySelectorAll('.thumbnail');
+            const mainImage = document.querySelector('.main-image');
+
+            thumbnails.forEach(thumbnail => {
+                thumbnail.addEventListener('click', () => {
+                    mainImage.src = thumbnail.src.replace('80', '600');
+                });
+            });
+
+            function initMap() {
+                const location = { lat: 41.0082, lng: 28.9784 }; // Example: Istanbul coordinates
+                const map = new google.maps.Map(document.getElementById("map"), {
+                    zoom: 16,
+                    center: location,
+                });
+
+                new google.maps.Marker({
+                    position: location,
+                    map: map,
+                });
+            }
+        </script>
+
+        <script async
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBhP60CyBuQgNkoRknONTnLuvcOiZ9RR6U&callback=initMap">
+            </script>
+</body>
+
+
+</html>

@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Araba Marketim</title>
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Layout */
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Left Menu */
+        .left-menu {
+            width: 250px;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .left-menu nav a {
+            display: block;
+            padding: 10px;
+            color: #333;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+
+        .left-menu nav a:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+        }
+
+        /* Header */
+        .header {
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px 0;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #e31837;
+            text-decoration: none;
+        }
+
+        .search-bar {
+            flex-grow: 1;
+            margin: 0 20px;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .header-buttons a {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #e31837;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-left: 10px;
+        }
+
+        .header-buttons .negative {
+            background-color: #dc3545;
+        }
+
+        /* Filters */
+        .filters {
+            background-color: #e9ecef;
+            padding: 20px 0;
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .filter-item label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .filter-item select,
+        .filter-item input[type="range"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        /* new style cards */
+
+        .card {
+            width: 300px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .card-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .card-content {
+            padding: 16px;
+        }
+
+        .card-title {
+            margin: 0;
+            font-size: 1.25rem;
+            color: #333333;
+        }
+
+        /* Brands Grid */
+        .models-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+
+            gap: 20px;
+            padding: 40px 0;
+        }
+
+        .model-card {
+            position: relative;
+            height: 150px;
+            /* Ensure the card has a set height */
+            border-radius: 8px;
+            overflow: hidden;
+            /* Ensures background doesn't overflow */
+            background-image: url('/images/tyre.png');
+            /* Make sure the path is correct */
+            background-size: cover;
+            /* Make sure the image covers the entire card */
+            background-position: center;
+            /* Center the background image */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            color: white;
+            /* Set text color to white */
+        }
+
+        /* Dark overlay on the background */
+        .model-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            /* Semi-transparent black background */
+            z-index: 0;
+            /* Ensure the overlay stays behind the text */
+        }
+
+        /* Ensures the text stays on top of the overlay */
+        .model-card h3,
+        .model-card p {
+            position: relative;
+            z-index: 1;
+            /* Ensure text is above the overlay */
+        }
+
+        /* Optional: Hover effect */
+        .model-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+
+
+
+
+        .brand-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .brand-info {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .brand-card:hover .brand-info {
+            opacity: 1;
+        }
+
+        .brand-name {
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+
+        /* Style for the model card */
+        /* Style for the model card */
+        .model-card {
+            position: relative;
+            background-color: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            /* Align items vertically */
+            justify-content: center;
+            /* Vertically center content */
+            align-items: center;
+            /* Horizontally center content */
+            text-align: center;
+            /* Center text inside the card */
+            padding: 20px;
+            margin: 10px;
+            height: 200px;
+            /* Set a fixed height to ensure content is centered */
+        }
+
+        /* Hover effect on model card */
+        .model-card:hover {
+            transform: scale(1.05);
+            /* Slightly enlarge on hover */
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+            /* Darker shadow */
+        }
+
+        /* Styling for the model name */
+        .model-card h3 {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        /* Styling for the model year */
+        .model-year {
+            font-size: 2.5em;
+            /* Bigger font size for the year */
+            font-weight: bold;
+            color: #333;
+            transition: color 0.3s ease;
+            /* Smooth transition for color change */
+        }
+
+        /* Hover effect for the year */
+        .model-card:hover .model-year {
+            color: #007bff;
+            /* Change color when hovering over the card */
+        }
+
+
+
+        .filter-panel {
+            width: 300px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-right: 20px;
+            overflow-y: auto;
+        }
+
+        .filter-panel h3 {
+            margin-bottom: 20px;
+            font-size: 18px;
+            color: #e31837;
+        }
+
+        .filter-category {
+            margin-bottom: 20px;
+        }
+
+        .filter-category h4 {
+            margin-bottom: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .filter-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .filter-list li {
+            margin-bottom: 8px;
+        }
+
+        .filter-list a {
+            text-decoration: none;
+            color: #555;
+            font-size: 14px;
+            transition: color 0.2s ease-in-out;
+        }
+
+        .filter-list a:hover {
+            color: #e31837;
+        }
+
+        .filter-item input[type="range"] {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .filter-panel {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+        }
+
+
+
+        /* Footer */
+        .footer {
+            background-color: #333;
+            color: #fff;
+            padding: 40px 0;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+        }
+
+        .footer-section h3 {
+            color: #e31837;
+            margin-bottom: 20px;
+        }
+
+        .footer-section ul {
+            list-style-type: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-section ul li a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .footer-section ul li a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .layout {
+                flex-direction: column;
+            }
+
+            .left-menu {
+                width: 100%;
+                display: none;
+            }
+
+            .header-content {
+                flex-direction: column;
+            }
+
+            .search-bar {
+                margin: 20px 0;
+                width: 100%;
+            }
+
+            .header-buttons {
+                display: flex;
+                justify-content: space-between;
+                width: 100%;
+            }
+
+            .header-buttons a {
+                flex: 1;
+                text-align: center;
+                margin: 0 5px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="layout">
+        <!-- Left Menu -->
+        <%- include('leftpanel') %>
+
+
+            <!-- Main Content -->
+            <main class="main-content">
+                <!-- Header -->
+                <%- include('header') %>
+
+                    <!-- Filters -->
+                    <%- include('filters') %>
+
+                        <!-- Brands Grid -->
+                        <section class="container">
+                            <h2>Years for <%= brand %>
+                            </h2>
+
+                            <% if (years && years.length> 0) { %>
+                                <div class="models-grid">
+                                    <% years.forEach(year=> { %>
+                                        <a href="/modifications/<%= brand %>/<%= model.name %>/<%= year.name %>"
+                                            class="model-card">
+                                            <h3>
+                                                <%= year.name %>
+                                            </h3>
+                                        </a>
+                                        <% }); %>
+                                </div>
+                                <% } else { %>
+                                    <p>
+                                        <%= message || 'No models available for this brand.' %>
+                                    </p>
+                                    <% } %>
+                        </section>
+
+
+                        <!-- Footer -->
+                        <%- include('footer') %>
+            </main>
+    </div>
+</body>
+
+</html>

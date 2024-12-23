@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Araba Marketim</title>
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+
+        .content-wrapper {
+            display: flex;
+            align-items: flex-start;
+            /* Align filter panel and products at the top */
+            gap: 20px;
+            /* Add spacing between the filter panel and products grid */
+            padding: 20px;
+            /* Optional: Add padding for the content */
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+
+        }
+
+        /* Container for the grid */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            /* Create a responsive grid */
+            gap: 20px;
+            /* Spacing between grid items */
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        /* Card styles */
+        .card-product {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-product:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .card-product-content {
+            padding: 15px;
+        }
+
+        .card-product-title {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .card-product-info {
+            font-size: 0.9rem;
+            margin: 5px 0;
+        }
+
+        .card-product-price {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #e94e77;
+            margin-top: 10px;
+        }
+
+        .header-buttons a {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: #e94e77;
+            color: #fff;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .header-buttons a:hover {
+            background-color: #d03f64;
+        }
+
+
+        .card-container {
+            display: flex;
+            /* Enables flexbox for horizontal layout */
+            width: 100%;
+            /* Makes the container fill the available width */
+            height: 400px;
+            /* Optional: Set a consistent height for the cards */
+            margin: 0 auto;
+            /* Center the container on the page */
+            gap: 20px;
+            /* Remove spacing between the cards for full width */
+        }
+
+        /* Cards fill available space equally */
+        .card {
+            flex: 1;
+            /* Ensures each card takes up an equal share of space */
+            height: 100%;
+            /* Makes cards match the container height */
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+        }
+
+        /* Background images fill the card */
+        .card-bg {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* Ensures the image covers the card without distortion */
+        }
+
+        /* Title styles */
+        .card-title {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 15px;
+            font-size: 24px;
+            text-align: center;
+        }
+
+        h1 {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        /* Layout */
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Left Menu */
+        .left-menu {
+            width: 250px;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .left-menu nav a {
+            display: block;
+            padding: 10px;
+            color: #333;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+
+        .left-menu nav a:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+        }
+
+        /* Header */
+        .header {
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px 0;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #e31837;
+            text-decoration: none;
+        }
+
+        .search-bar {
+            flex-grow: 1;
+            margin: 0 20px;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .header-buttons {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .header-buttons a {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #e31837;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-left: 10px;
+        }
+
+        .header-buttons .negative {
+            background-color: #dc3545;
+        }
+
+        /* Filters */
+        .filter-panel {
+            padding: 20px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            max-width: 300px;
+            flex-shrink: 0;
+        }
+
+        .filter-category {
+            margin-bottom: 20px;
+        }
+
+        .filter-options {
+            max-height: 150px;
+            /* Kaydırma için maksimum yükseklik */
+            overflow-y: auto;
+            /* Dikey kaydırma */
+            border: 1px solid #ccc;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 4px;
+        }
+
+        .filter-options label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .filter-options input[type="checkbox"] {
+            margin-right: 10px;
+        }
+
+        .filters {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            /* Ensure it stays on top */
+            background-color: #fff;
+            /* Optional: add background color for visibility */
+            padding: 20px;
+            /* Add padding to make the filter section look better */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            /* Optional: shadow for better visibility */
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .filter-item label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .filter-list {
+            max-height: 150px;
+            /* Set a maximum height for the list */
+            overflow-y: auto;
+            /* Enable vertical scrolling */
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            /* Remove default list styling */
+            border: 1px solid #ccc;
+            /* Optional: Add a border for clarity */
+            padding: 5px;
+            /* Optional: Add padding inside the scrollable area */
+        }
+
+        .filter-list li {
+            margin-bottom: 5px;
+            /* Optional: Add spacing between list items */
+        }
+
+        .filter-item select,
+        .filter-item input[type="range"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        /* Brands Grid */
+        .brands-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 40px 0;
+        }
+
+        .brand-card {
+            position: relative;
+            height: 150px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            background-color: #ffffff;
+        }
+
+        .brand-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .brand-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .brand-info {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .brand-card:hover .brand-info {
+            opacity: 1;
+        }
+
+        .brand-name {
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+
+        .filters {
+            background-color: #e9ecef;
+            padding: 20px 0;
+            z-index: 1;
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .filter-item {
+            position: relative;
+        }
+
+        .filter-item label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .filter-item input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .filter-options {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 10;
+        }
+
+        .filter-option {
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .filter-option:hover {
+            background-color: #f0f0f0;
+        }
+
+        .menu-button {
+            display: none;
+            background-color: #e31837;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .filter-panel {
+            /* width: 300px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-right: 20px;
+            overflow-y: auto; */
+            display: block;
+        }
+
+        .filter-panel h3 {
+            margin-bottom: 20px;
+            font-size: 18px;
+            color: #e31837;
+        }
+
+        .filter-category {
+            margin-bottom: 20px;
+        }
+
+        .filter-category h4 {
+            margin-bottom: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .filter-list {
+            max-height: 150px;
+            /* Set maximum height for the scrollable area */
+            overflow-y: auto;
+            /* Enable vertical scrolling */
+            list-style: none;
+            /* Remove default list styling */
+            padding: 5px;
+            /* Add padding inside the scrollable area */
+            border: 1px solid #ccc;
+            /* Optional: Add a border for clarity */
+        }
+
+        .filter-list li {
+            margin-bottom: 5px;
+            /* Optional: Add spacing between items */
+        }
+
+        .filter-list a {
+            text-decoration: none;
+            color: #555;
+            font-size: 14px;
+            transition: color 0.2s ease-in-out;
+        }
+
+        .filter-list a:hover {
+            color: #e31837;
+        }
+
+        .filter-item input[type="range"] {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        button {
+            background-color: #e31837;
+            /* Primary blue color */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            margin-top: 10px;
+            margin-left: 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            /* Rounded corners */
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #ed6277;
+            /* Darker blue on hover */
+        }
+
+        button:focus {
+            outline: none;
+            /* Remove focus outline */
+        }
+
+
+        @media (max-width: 768px) {
+            .menu-button {
+                display: block;
+                /* Show the menu button */
+            }
+
+            .filter-panel {
+                display: none;
+                /* Hide the filter panel by default */
+            }
+
+            .filter-panel.active {
+                display: block;
+                /* Show filter panel when the menu is toggled */
+                background-color: white;
+                padding: 10px;
+                position: absolute;
+                z-index: 1000;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            /*.filter-panel {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: #fff;
+                z-index: 10;
+                box-shadow: none;
+                padding: 20px;
+                border-radius: 0;
+                display: block;
+            }*/
+
+            .filter-scroll {
+                max-height: calc(100% - 80px);
+                /* Adjust to fit remaining screen height */
+            }
+
+            .filter-category h4 {
+                font-size: 1rem;
+                /* Reduce font size for smaller screens */
+            }
+
+            .filter-list label {
+                font-size: 0.9rem;
+                /* Reduce font size */
+            }
+        }
+
+
+
+        /* Footer */
+        .footer {
+            background-color: #333;
+            color: #fff;
+            padding: 40px 0;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+        }
+
+        .footer-section h3 {
+            color: #e31837;
+            margin-bottom: 20px;
+        }
+
+        .footer-section ul {
+            list-style-type: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-section ul li a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .footer-section ul li a:hover {
+            text-decoration: underline;
+        }
+
+        .profile-container .dropdown {
+            position: absolute;
+            /* Ensure it's positioned relative to its nearest positioned ancestor */
+            z-index: 1000;
+            /* Set a high value */
+        }
+
+        /* Style for the profile dropdown container */
+        .profile-container {
+            position: relative;
+            display: flex;
+            margin-left: 15px;
+            margin-right: 15px;
+            align-items: center;
+
+        }
+
+        /* Profile button */
+        .profile-icon {
+            background: none;
+            border: none;
+            padding: 0;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        /* Profile image */
+        .profile-icon img {
+            width: 40px;
+            /* Adjust size */
+            height: 40px;
+            /* Adjust size */
+            border-radius: 50%;
+            /* Makes the image circular */
+            object-fit: cover;
+            /* Ensures proper scaling */
+        }
+
+        .profile-icon:hover+.dropdown,
+        .dropdown:hover {
+            display: block;
+            /* Show dropdown when the icon is hovered */
+        }
+
+        /* Dropdown menu styling */
+        .dropdown {
+            display: none;
+            /* Hidden by default */
+            position: absolute;
+            top: 100%;
+            /* Adjust to position below the profile icon */
+            right: 0;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            min-width: 150px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        /* Links inside the dropdown */
+        .dropdown a {
+            display: block;
+            padding: 10px 15px;
+            color: black;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background-color 0.2s ease;
+            cursor: pointer;
+            /* Ensures links are clickable */
+        }
+
+        /* Hover effect for dropdown links */
+        .dropdown a:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* Show dropdown on hover */
+        .profile-container:hover .dropdown {
+            display: block;
+        }
+
+        .dropdown a {
+            display: block;
+            padding: 10px 15px;
+            text-decoration: none;
+            color: #333;
+            transition: background-color 0.3s;
+        }
+
+        .dropdown a:hover {
+            background-color: #f5f5f5;
+        }
+
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .layout {
+                flex-direction: column;
+            }
+
+            .left-menu {
+                width: 100%;
+                display: none;
+            }
+
+            .header-content {
+                flex-direction: column;
+            }
+
+            .search-bar {
+                margin: 20px 0;
+                width: 100%;
+            }
+
+            .header-buttons {
+                display: flex;
+                justify-content: space-between;
+                width: 100%;
+            }
+
+            .header-buttons a {
+                flex: 1;
+                text-align: center;
+                margin: 0 5px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="layout">
+        <!-- Left Menu -->
+
+
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="container">
+                    <div class="header-content">
+                        <a href="/" class="logo">arabamarketim.com</a>
+                        <div class="search-bar">
+                            <input type="text" placeholder="Marka veya model ara...">
+                        </div>
+                        <div class="header-buttons">
+                            <a href="/publish">İlan Ver</a>
+
+                        </div>
+
+                        <% if (user) { %>
+                            <!-- Display profile container if authenticated -->
+                            <div class="profile-container">
+                                <button class="profile-icon">
+                                    <img src="<%= user.fotourl %>" alt="Profile Picture" />
+                                </button>
+                                <div class="dropdown">
+                                    <a href="/profile">Bilgilerim</a>
+                                    <a href="/logout">Çıkış Yap</a>
+                                </div>
+                            </div>
+                            <% } else { %>
+                                <!-- Display "Giriş Yap/Kayıt Ol" buttons if not authenticated -->
+                                <button onclick="window.location.href='/lander'">Giriş Yap / Kayıt Ol</button>
+                                <% } %>
+
+
+
+                    </div>
+
+                </div>
+            </header>
+
+
+
+            <!-- Filters -->
+            <section class="filters">
+                <div class="container">
+                    <div class="filter-grid">
+                        <div class="filter-item">
+                            <label for="car-make">Araba Markası</label>
+                            <select id="car-make">
+                                <option value="">Seçiniz</option>
+                                <% brands.forEach(brand=> { %>
+                                    <option value="<%= brand.slug %>">
+                                        <%= brand.name %>
+                                    </option>
+                                    <% }); %>
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <label for="car-year">Yıl</label>
+                            <select id="car-year" disabled>
+                                <option value="">Seçiniz</option>
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <label for="car-model">Model</label>
+                            <select id="car-model" disabled>
+                                <option value="">Seçiniz</option>
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <label for="car-modification">Motor</label>
+                            <select id="car-modification" disabled>
+                                <option value="">Seçiniz</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button id="find-tire" disabled>Uygun Lastiği Bul</button>
+                </div>
+            </section>
+
+
+            <div class="content-wrapper">
+
+                <button class="menu-button" aria-expanded="false" aria-controls="filter-panel">
+                    ☰ Filtreler
+                </button>
+
+                <%- include('filterpanel') %>
+                    <!-- Brands Grid -->
+                    <section class="container">
+
+
+
+                        <div class="card-container">
+                            <div class="card">
+                                <img src="/images/rimcard.png" alt="Jant" class="card-bg">
+                                <div class="card-title">Jant</div>
+                            </div>
+                            <div class="card">
+                                <img src="/images/tyrecard.png" alt="Lastik" class="card-bg">
+                                <div class="card-title">Lastik</div>
+                            </div>
+                        </div>
+
+                        <h1>Popüler İlanlar</h1>
+
+                        <div class="products-grid">
+                            <% products.forEach(product=> { %>
+                                <div class="card-product">
+                                    <img src="/images/placeholder.png" alt="Ürün Resmi" class="card-product-image"
+                                        data-src="<%= product.imageUrl %>"
+                                        onload="this.src=this.getAttribute('data-src');"
+                                        onerror="this.onerror=null; this.src='/images/placeholder.png';" loading="lazy">
+                                    <div class="card-product-content">
+                                        <h2 class="card-product-title">
+                                            <%= product.brand || 'No Title' %>
+                                        </h2>
+                                        <p class="card-product-info"><strong>Türü:</strong>
+                                            <%= product.type || 'Unknown' %>
+                                        </p>
+                                        <p class="card-product-info"><strong>Ebat / Boyut:</strong>
+                                            <%= product.size || 'N/A' %>
+                                        </p>
+                                        <p class="card-product-info"><strong>Marka:</strong>
+                                            <%= product.brand || 'N/A' %>
+                                        </p>
+                                        <p class="card-product-info"><strong>İl / İlçe:</strong>
+                                            <%= product.location || 'Unknown' %>
+                                        </p>
+                                        <p class="card-product-price">Fiyat: <%= product.price || '0' %> TL</p>
+                                        <div class="header-buttons">
+                                            <a href="/product/<%= product.adNumber %>">İlan Detayı</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <% }); %>
+                        </div>
+
+
+
+
+
+
+
+                    </section>
+
+            </div>
+
+            <!-- Footer -->
+            <%- include('footer') %>
+        </main>
+    </div>
+
+
+    <script>
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const menuButton = document.querySelector('.menu-button');
+            const filterPanel = document.querySelector('.filter-panel');
+
+            menuButton.addEventListener('click', () => {
+                const isExpanded = menuButton.getAttribute('aria-expanded') === 'true';
+                menuButton.setAttribute('aria-expanded', !isExpanded);
+                filterPanel.classList.toggle('active');
+            });
+
+            const carMakeSelect = document.getElementById('car-make');
+            const carYearSelect = document.getElementById('car-year');
+            const carModelSelect = document.getElementById('car-model');
+            const carModificationSelect = document.getElementById('car-modification');
+            const findTireButton = document.getElementById('find-tire');
+
+            let tire_info = null;
+
+            async function fetchYearsForBrand(brandSlug) {
+                const response = await fetch(`/years?make=${brandSlug}`);
+                const data = await response.json();
+                console.log('Years data received:', data); // Log the entire data object
+
+                // Clear the current options in the select element
+                carYearSelect.innerHTML = '<option value="">Yıl Seçiniz</option>';
+
+
+                // Check if 'data.data' contains the expected array of years
+                if (data.data && Array.isArray(data.data)) {
+                    data.data.forEach(item => {
+
+                        const option = document.createElement('option');
+                        option.value = item.slug; // Use 'slug' as the value
+                        option.textContent = item.name; // Display 'name' as the visible option
+                        carYearSelect.appendChild(option);
+                    });
+                    carYearSelect.disabled = false; // Enable the year select
+                } else {
+                    console.error('Data is not in the expected format:', data);
+                }
+            }
+
+            async function fetchModelsForYears(brandSlug, yearSlug) {
+                const response = await fetch(`/models?make=${brandSlug}&year=${yearSlug}`);
+                const data = await response.json();
+                console.log('Years data received:', data);
+                carModelSelect.innerHTML = '<option value="">Model Seçiniz</option>';
+                data.data.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.slug;
+                    option.textContent = item.name;
+                    carModelSelect.appendChild(option);
+                });
+                carModelSelect.disabled = false;
+            }
+
+            async function fetchModificationsForModel(brandSlug, yearSlug, modelSlug) {
+                const response = await fetch(`/modifications?make=${brandSlug}&year=${yearSlug}&model=${modelSlug}`);
+                const data = await response.json();
+                console.log('Years data received:', data);
+                carModificationSelect.innerHTML = '<option value="">Motor Seçiniz</option>';
+                data.data.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.slug;
+                    option.textContent = item.name;
+                    carModificationSelect.appendChild(option);
+                });
+                carModificationSelect.disabled = false;
+            }
+
+            async function fetchSearchResultsByModification(make, model, modification, year) {
+                const response = await fetch(`/search?make=${make}&model=${model}&modification=${modification}&year=${year}`);
+                const data = await response.json();
+                if (data && data.data && data.data[0] && data.data[0].wheels && data.data[0].wheels[0] && data.data[0].wheels[0].front) {
+                    const tire = data.data[0].wheels[0].front.tire;
+                    tire_info = tire;
+                    console.log('front.tire_full:', tire);
+                    findTireButton.disabled = false;
+                } else {
+                    console.error('Required data not found in the response');
+                    alert('Data not found for front.tire_full');
+                }
+                console.log('Years data received:', data);
+                // Process search results
+            }
+
+            carMakeSelect.addEventListener('change', (event) => {
+                const brand = event.target.value;
+                fetchYearsForBrand(brand);
+            });
+
+            carYearSelect.addEventListener('change', (event) => {
+                const year = event.target.value;
+                const brand = carMakeSelect.value;
+                fetchModelsForYears(brand, year);
+            });
+
+            carModelSelect.addEventListener('change', (event) => {
+                const model = event.target.value;
+                const year = carYearSelect.value;
+                const brand = carMakeSelect.value;
+                fetchModificationsForModel(brand, year, model);
+            });
+
+            carModificationSelect.addEventListener('change', (event) => {
+                const modification = event.target.value;
+                const model = carModelSelect.value;
+                const year = carYearSelect.value;
+                const brand = carMakeSelect.value;
+                fetchSearchResultsByModification(brand, model, modification, year);
+            });
+
+            findTireButton.addEventListener('click', async () => {
+                if (tire_info) {
+                    console.log('Tire info:', tire_info);  // Log tire_info value
+                    alert('Tire info: ' + tire_info);  // Alert the tire_info if it exists
+
+                    try {
+                        console.log('Sending fetch request to /filter-adverts with tire info:', tire_info);  // Log fetch request
+                        const response = await fetch(`/filter-adverts?size=${encodeURIComponent(tire_info)}`);
+                        console.log('Response status:', response.status);  // Log the status of the response
+
+                        if (!response.ok) {
+                            throw new Error('Failed to fetch adverts');
+                        }
+
+                        const adverts = await response.json();
+                        console.log('Fetched adverts:', adverts);  // Log the adverts returned by the server
+
+                        // Display the adverts
+                        const resultsContainer = document.querySelector('.products-grid');
+                        resultsContainer.innerHTML = ''; // Clear previous results
+
+                        if (adverts.length === 0) {
+                            console.log('No adverts found for size:', tire_info);
+                            resultsContainer.innerHTML = 'No adverts found.';
+                        } else {
+                            adverts.forEach(advert => {
+                                console.log('Displaying advert:', advert);  // Log each advert being displayed
+                                const card = `
+                    
+                    
+                    <div class="card-product">
+                                    <img src="/images/placeholder.png" alt="Ürün Resmi" class="card-product-image"
+                                        data-src="${advert.imageUrl}"
+                                        onload="this.src=this.getAttribute('data-src');"
+                                        onerror="this.onerror=null; this.src='/images/placeholder.png';" loading="lazy">
+                                    <div class="card-product-content">
+                                        <h2 class="card-product-title">
+                                            ${advert.brand}
+                                        </h2>
+                                        <p class="card-product-info"><strong>Türü:</strong>
+                                            ${advert.type}
+                                        </p>
+                                        <p class="card-product-info"><strong>Ebat / Boyut:</strong>
+                                            ${advert.size}
+                                        </p>
+                                        <p class="card-product-info"><strong>Marka:</strong>
+                                            ${advert.brand}
+                                        </p>
+                                        <p class="card-product-info"><strong>İl / İlçe:</strong>
+                                            ${advert.location}
+                                        </p>
+                                        <p class="card-product-price">Fiyat: ${advert.price} TL</p>
+                                        <div class="header-buttons">
+                                            <a href="/product/${advert.adNumber}">İlan Detayı</a>
+                                        </div>
+                                    </div>
+                                </div>`;
+                                resultsContainer.insertAdjacentHTML('beforeend', card);
+                            });
+                        }
+                    } catch (error) {
+                        console.error('Error fetching adverts:', error);
+                        alert('An error occurred while fetching adverts.');
+                    }
+                } else {
+                    console.log('No tire info available.');
+                    alert('No tire info available.');
+                }
+            });
+
+
+
+
+        });
+
+
+
+    </script>
+
+
+</body>
+
+</html>

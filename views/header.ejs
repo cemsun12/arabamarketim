@@ -1,0 +1,33 @@
+<header class="header">
+    <div class="container">
+        <div class="header-content">
+            <a href="/home" class="logo">arabamarketim.com</a>
+            <div class="search-bar">
+                <input type="text" placeholder="Marka veya model ara...">
+            </div>
+            <div class="header-buttons">
+                <a href="/publish">İlan Ver</a>
+
+            </div>
+
+            <% if (user) { %>
+                <!-- Display profile container if authenticated -->
+                <div class="profile-container">
+                    <button class="profile-icon">
+                        <img src="/images/profile-user.png" alt="Profile Picture" />
+                    </button>
+                    <div class="dropdown">
+                        <a href="#">Bilgilerim</a>
+                        <a href="/logout">Çıkış Yap</a>
+                    </div>
+                </div>
+                <% } else { %>
+                    <!-- Display "Giriş Yap/Kayıt Ol" buttons if not authenticated -->
+                    <button onclick="window.location.href='/lander'">Giriş Yap / Kayıt Ol</button>
+                    <% } %>
+
+
+        </div>
+
+    </div>
+</header>

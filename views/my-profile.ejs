@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #fff;
+            padding: 2rem;
+            border-right: 1px solid #e0e0e0;
+        }
+
+        .sidebar nav {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar a {
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+            color: #666;
+            border-radius: 5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar a:hover {
+            background-color: #f0f0f0;
+        }
+
+        .sidebar a.active {
+            background-color: #e6f7ff;
+            color: #1890ff;
+            font-weight: bold;
+        }
+
+        .sidebar a.delete-account {
+            color: #ff4d4f;
+            margin-top: 1rem;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-right: 1rem;
+        }
+
+        .profile-header h2 {
+            font-size: 1.25rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .profile-header p {
+            color: #666;
+        }
+
+        .location {
+            font-size: 0.875rem;
+            color: #999;
+        }
+
+        .header-buttons a {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: #e94e77;
+            color: #fff;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .header-buttons a:hover {
+            background-color: #d03f64;
+        }
+
+        .header {
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px 0;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #e31837;
+            text-decoration: none;
+        }
+
+        .search-bar {
+            flex-grow: 1;
+            margin: 0 20px;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .header-buttons {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .header-buttons a {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #e31837;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-left: 10px;
+        }
+
+        .header-buttons .negative {
+            background-color: #dc3545;
+        }
+
+
+        .card {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .card-header h3 {
+            font-size: 1.125rem;
+        }
+
+        .profile-container {
+            position: relative;
+            display: flex;
+            margin-left: 15px;
+            margin-right: 15px;
+            margin-top: 12px;
+            align-items: center;
+
+        }
+
+        /* Profile button */
+        .profile-icon {
+            background: none;
+            border: none;
+            padding: 0;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        /* Profile image */
+        .profile-icon img {
+            width: 40px;
+            /* Adjust size */
+            height: 40px;
+            /* Adjust size */
+            border-radius: 50%;
+            /* Makes the image circular */
+            object-fit: cover;
+            /* Ensures proper scaling */
+        }
+
+        .profile-icon:hover+.dropdown,
+        .dropdown:hover {
+            display: block;
+            /* Show dropdown when the icon is hovered */
+        }
+
+        /* Dropdown menu styling */
+        .dropdown {
+            display: none;
+            /* Hidden by default */
+            position: absolute;
+            top: 100%;
+            /* Adjust to position below the profile icon */
+            right: 0;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            min-width: 150px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        /* Links inside the dropdown */
+        .dropdown a {
+            display: block;
+            padding: 10px 15px;
+            color: black;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background-color 0.2s ease;
+            cursor: pointer;
+            /* Ensures links are clickable */
+        }
+
+        /* Hover effect for dropdown links */
+        .dropdown a:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* Show dropdown on hover */
+        .profile-container:hover .dropdown {
+            display: block;
+        }
+
+        .dropdown a {
+            display: block;
+            padding: 10px 15px;
+            text-decoration: none;
+            color: #333;
+            transition: background-color 0.3s;
+        }
+
+        .dropdown a:hover {
+            background-color: #f5f5f5;
+        }
+
+        .edit-button {
+            background: none;
+            border: none;
+            color: #1890ff;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+
+        .card-content {
+            padding: 1rem;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .label {
+            font-size: 0.875rem;
+            color: #999;
+            margin-bottom: 0.25rem;
+        }
+
+        .main-container {
+            display: flex;
+            margin-top: 20px;
+            /* Adjust for spacing from the header */
+        }
+
+        /* Sidebar styles */
+        .sidebar {
+            width: 250px;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+
+        .sidebar nav a {
+            display: block;
+            padding: 10px 0;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .sidebar nav .active {
+            font-weight: bold;
+        }
+
+        /* Main content styles */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+        }
+
+        /* Profile Header styling */
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-header .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-right: 20px;
+        }
+
+        /* Profile container for dropdown */
+        .profile-container {
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .profile-container .profile-icon {
+            background: none;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+        }
+
+        .profile-container .dropdown {
+            display: none;
+            position: absolute;
+            top: 30px;
+            right: 0;
+            background: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .profile-container:hover .dropdown {
+            display: block;
+        }
+
+        /* Additional styling for profile information sections */
+        .card {
+            margin-bottom: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            padding: 10px;
+            background-color: #f5f5f5;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .card-content {
+            padding: 20px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .info-grid .full-width {
+            grid-column: span 2;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid #e0e0e0;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="/" class="logo">arabamarketim.com</a>
+                <div class="search-bar">
+                    <input type="text" placeholder="Marka veya model ara...">
+                </div>
+                <div class="header-buttons">
+                    <a href="/publish">İlan Ver</a>
+                </div>
+
+                <% if (user) { %>
+                    <!-- Display profile container if authenticated -->
+                    <div class="profile-container">
+                        <button class="profile-icon">
+                            <img src="<%= user.fotourl %>" alt="Profile Picture" />
+                        </button>
+                        <div class="dropdown">
+                            <a href="/profile">Bilgilerim</a>
+                            <a href="/logout">Çıkış Yap</a>
+                        </div>
+                    </div>
+                    <% } else { %>
+                        <!-- Display "Giriş Yap/Kayıt Ol" buttons if not authenticated -->
+                        <button onclick="window.location.href='/lander'">Giriş Yap / Kayıt Ol</button>
+                        <% } %>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <nav>
+                <a href="#" class="active">Profilim</a>
+                <a href="#">Güvenlik</a>
+                <a href="#">Bildirimler</a>
+                <a href="#">Ödeme</a>
+                <a href="#" class="delete-account">Hesabı Sil</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <h1>My Profile</h1>
+            <div class="profile-header">
+                <img src="<%= user.fotourl || '/images/profile-user.png' %>" alt="Profile Picture" class="avatar">
+                <div>
+                    <h2>
+                        <%= user.name %>
+                    </h2>
+                    <p>
+                        <%= user.jobTitle || 'Team Manager' %>
+                    </p>
+                    <p class="location">
+                        <%= user.address || 'Leeds, United Kingdom' %>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Personal Information Section -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>Personal Information</h3>
+                    <button class="edit-button">Edit</button>
+                </div>
+                <div class="card-content">
+                    <div class="info-grid">
+                        <div>
+                            <p class="label">First Name</p>
+                            <p>
+                                <%= user.name %>
+                            </p>
+                        </div>
+                        <div>
+                            <p class="label">Last Name</p>
+                            <p>
+                                <%= user.surname %>
+                            </p>
+                        </div>
+                        <div>
+                            <p class="label">Email address</p>
+                            <p>
+                                <%= user.email %>
+                            </p>
+                        </div>
+                        <div>
+                            <p class="label">Phone</p>
+                            <p>
+                                <%= user.phone %>
+                            </p>
+                        </div>
+                        <div class="full-width">
+                            <p class="label">Bio</p>
+                            <p>
+                                <%= user.bio || 'Team Manager' %>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Address Section -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>Address</h3>
+                    <button class="edit-button">Edit</button>
+                </div>
+                <div class="card-content">
+                    <div class="info-grid">
+                        <div>
+                            <p class="label">Country</p>
+                            <p>
+                                <%= user.country || 'United Kingdom' %>
+                            </p>
+                        </div>
+                        <div>
+                            <p class="label">City/State</p>
+                            <p>
+                                <%= user.cityState || 'Leeds, East London' %>
+                            </p>
+                        </div>
+                        <div>
+                            <p class="label">Postal Code</p>
+                            <p>
+                                <%= user.postalCode || 'ERT 2354' %>
+                            </p>
+                        </div>
+                        <div>
+                            <p class="label">TAX ID</p>
+                            <p>
+                                <%= user.taxID || 'AS45645756' %>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+
+
+
+
+</html>

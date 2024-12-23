@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Araba Markaları</title>
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Layout */
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Left Menu */
+        .left-menu {
+            width: 250px;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .left-menu nav a {
+            display: block;
+            padding: 10px;
+            color: #333;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+
+        .left-menu nav a:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+        }
+
+        /* Header */
+        .header {
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px 0;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #e31837;
+            text-decoration: none;
+        }
+
+        .search-bar {
+            flex-grow: 1;
+            margin: 0 20px;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .header-buttons a {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #e31837;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-left: 10px;
+        }
+
+        .header-buttons .negative {
+            background-color: #dc3545;
+        }
+
+        /* Filters */
+        .filters {
+            background-color: #e9ecef;
+            padding: 20px 0;
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .filter-item label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .filter-item select,
+        .filter-item input[type="range"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        /* Brands Grid */
+        .brands-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 40px 0;
+        }
+
+        .brand-card {
+            position: relative;
+            height: 150px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            background-color: #ffffff;
+        }
+
+        .brand-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .brand-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .brand-info {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .brand-card:hover .brand-info {
+            opacity: 1;
+        }
+
+        .brand-name {
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+
+        .filter-panel {
+            width: 300px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-right: 20px;
+            overflow-y: auto;
+        }
+
+        .filter-panel h3 {
+            margin-bottom: 20px;
+            font-size: 18px;
+            color: #e31837;
+        }
+
+        .filter-category {
+            margin-bottom: 20px;
+        }
+
+        .filter-category h4 {
+            margin-bottom: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .filter-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .filter-list li {
+            margin-bottom: 8px;
+        }
+
+        .filter-list a {
+            text-decoration: none;
+            color: #555;
+            font-size: 14px;
+            transition: color 0.2s ease-in-out;
+        }
+
+        .filter-list a:hover {
+            color: #e31837;
+        }
+
+        .filter-item input[type="range"] {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .filter-panel {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+        }
+
+
+
+        /* Footer */
+        .footer {
+            background-color: #333;
+            color: #fff;
+            padding: 40px 0;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+        }
+
+        .footer-section h3 {
+            color: #e31837;
+            margin-bottom: 20px;
+        }
+
+        .footer-section ul {
+            list-style-type: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-section ul li a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .footer-section ul li a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .layout {
+                flex-direction: column;
+            }
+
+            .left-menu {
+                width: 100%;
+                display: none;
+            }
+
+            .header-content {
+                flex-direction: column;
+            }
+
+            .search-bar {
+                margin: 20px 0;
+                width: 100%;
+            }
+
+            .header-buttons {
+                display: flex;
+                justify-content: space-between;
+                width: 100%;
+            }
+
+            .header-buttons a {
+                flex: 1;
+                text-align: center;
+                margin: 0 5px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="layout">
+        <!-- Left Menu -->
+        <aside class="left-menu">
+            <nav>
+                <a href="#">Ana Sayfa</a>
+                <a href="#">Markalar</a>
+                <a href="#">Modeller</a>
+                <a href="#">Lastikler</a>
+                <a href="#">Jantlar</a>
+                <a href="#">İletişim</a>
+            </nav>
+        </aside>
+
+        <!-- Filter Panel -->
+        <aside class="filter-panel">
+            <h3>Filtreleme Seçenekleri</h3>
+
+            <div class="filter-category">
+                <h4>Araba Markası</h4>
+                <ul class="filter-list">
+                    <li><a href="#">Toyota</a></li>
+                    <li><a href="#">Ford</a></li>
+                    <li><a href="#">BMW</a></li>
+                </ul>
+            </div>
+
+            <div class="filter-category">
+                <h4>Araç Türü</h4>
+                <ul class="filter-list">
+                    <li><a href="#">Sedan</a></li>
+                    <li><a href="#">SUV</a></li>
+                    <li><a href="#">Hatchback</a></li>
+                </ul>
+            </div>
+
+            <div class="filter-category">
+                <h4>Jant Boyutu</h4>
+                <ul class="filter-list">
+                    <li><a href="#">16 inç</a></li>
+                    <li><a href="#">17 inç</a></li>
+                    <li><a href="#">18 inç</a></li>
+                </ul>
+            </div>
+
+            <div class="filter-category">
+                <h4>Lastik Boyutu</h4>
+                <ul class="filter-list">
+                    <li><a href="#">205/55 R16</a></li>
+                    <li><a href="#">215/65 R16</a></li>
+                    <li><a href="#">225/45 R17</a></li>
+                </ul>
+            </div>
+
+
+        </aside>
+
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="container">
+                    <div class="header-content">
+                        <a href="#" class="logo">arabamarketim.com</a>
+                        <div class="search-bar">
+                            <input type="text" placeholder="Marka veya model ara...">
+                        </div>
+                        <div class="header-buttons">
+                            <a href="#">İlan Ver</a>
+                            <a href="/logout" class="negative">Çıkış Yap</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Filters -->
+            <section class="filters">
+                <div class="container">
+                    <div class="filter-grid">
+                        <div class="filter-item">
+                            <label for="car-model">Araba Markası</label>
+                            <select id="car-model">
+                                <option value="">Seçiniz</option>
+                                <option value="sedan">Audi</option>
+                                <option value="hatchback">BMW</option>
+                                <option value="suv">Mercedes</option>
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <label for="tyre-size">Lastik Boyutu</label>
+                            <select id="tyre-size">
+                                <option value="">Seçiniz</option>
+                                <option value="205-55-r16">205/55 R16</option>
+                                <option value="215-65-r16">215/65 R16</option>
+                                <option value="225-45-r17">225/45 R17</option>
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <label for="rim-size">Jant Boyutu</label>
+                            <select id="rim-size">
+                                <option value="">Seçiniz</option>
+                                <option value="16">16 inç</option>
+                                <option value="17">17 inç</option>
+                                <option value="18">18 inç</option>
+                            </select>
+                        </div>
+
+                        <div class="filter-item">
+                            <label for="price-range">Fiyat Aralığı</label>
+                            <input type="range" id="price-range" min="0" max="100" value="50">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Brands Grid -->
+            <section class="container">
+                <div class="brands-grid">
+                    <div class="brand-card">
+                        <img src="/images/logolar/toyota.jpg" alt="Toyota">
+                        <div class="brand-info">
+                            <h2 class="brand-name">Toyota</h2>
+                        </div>
+                    </div>
+                    <div class="brand-card">
+                        <img src="/images/logolar/ford.png" alt="Ford">
+                        <div class="brand-info">
+                            <h2 class="brand-name">Ford</h2>
+                        </div>
+                    </div>
+                    <div class="brand-card">
+                        <img src="/images/logolar/honda.jpg" alt="Honda">
+                        <div class="brand-info">
+                            <h2 class="brand-name">Honda</h2>
+                        </div>
+                    </div>
+                    <div class="brand-card">
+                        <img src="/images/logolar/bmw.png" alt="BMW">
+                        <div class="brand-info">
+                            <h2 class="brand-name">BMW</h2>
+                        </div>
+                    </div>
+                    <div class="brand-card">
+                        <img src="/images/logolar/mercedes.png" alt="Mercedes-Benz">
+                        <div class="brand-info">
+                            <h2 class="brand-name">Mercedes-Benz</h2>
+                        </div>
+                    </div>
+                    <div class="brand-card">
+                        <img src="/images/logolar/tesla.png" alt="Tesla">
+                        <div class="brand-info">
+                            <h2 class="brand-name">Tesla</h2>
+                        </div>
+                    </div>
+                    <div class="brand-card">
+                        <img src="/images/logolar/volkswagen.png" alt="Volkswagen">
+                        <div class="brand-info">
+                            <h2 class="brand-name">Volkswagen</h2>
+                        </div>
+                    </div>
+                    <div class="brand-card">
+                        <img src="/images/logolar/chevrolet.jpg" alt="Chevrolet">
+                        <div class="brand-info">
+                            <h2 class="brand-name">Chevrolet</h2>
+                        </div>
+                    </div>
+                    <div class="brand-card">
+                        <img src="/images/logolar/audi.jpg" alt="Audi">
+                        <div class="brand-info">
+                            <h2 class="brand-name">Audi</h2>
+                        </div>
+                    </div>
+                    <div class="brand-card">
+                        <img src="/images/logolar/hyundai.png" alt="Hyundai">
+                        <div class="brand-info">
+                            <h2 class="brand-name">Hyundai</h2>
+                        </div>
+                    </div>
+                    <div class="brand-card">
+                        <img src="/images/logolar/kia.jpg" alt="Kia">
+                        <div class="brand-info">
+                            <h2 class="brand-name">Kia</h2>
+                        </div>
+                    </div>
+                    <div class="brand-card">
+                        <img src="/images/logolar/jeep.png" alt="Jeep">
+                        <div class="brand-info">
+                            <h2 class="brand-name">Jeep</h2>
+                        </div>
+                    </div>
+                    <div class="brand-card">
+                        <img src="/images/logolar/subaru.jpg" alt="Subaru">
+                        <div class="brand-info">
+                            <h2 class="brand-name">Subaru</h2>
+                        </div>
+                    </div>
+                    <div class="brand-card">
+                        <img src="/images/logolar/nissan.webp" alt="Nissan">
+                        <div class="brand-info">
+                            <h2 class="brand-name">Nissan</h2>
+                        </div>
+                    </div>
+                    <div class="brand-card">
+                        <img src="/images/logolar/volvo.png" alt="Volvo">
+                        <div class="brand-info">
+                            <h2 class="brand-name">Volvo</h2>
+                        </div>
+                    </div>
+                    <div class="brand-card">
+                        <img src="/images/logolar/mazda.jpeg" alt="Mazda">
+                        <div class="brand-info">
+                            <h2 class="brand-name">Mazda</h2>
+                        </div>
+                    </div>
+                    <div class="brand-card">
+                        <img src="/images/logolar/jaguar.webp" alt="Jaguar">
+                        <div class="brand-info">
+                            <h2 class="brand-name">Jaguar</h2>
+                        </div>
+                    </div>
+                    <div class="brand-card">
+                        <img src="/images/logolar/lexus.svg" alt="Lexus">
+                        <div class="brand-info">
+                            <h2 class="brand-name">Lexus</h2>
+                        </div>
+                    </div>
+                    <div class="brand-card">
+                        <img src="/images/logolar/porsche.png" alt="Porsche">
+                        <div class="brand-info">
+                            <h2 class="brand-name">Porsche</h2>
+                        </div>
+                    </div>
+                    <div class="brand-card">
+                        <img src="/images/logolar/fiat.svg" alt="Fiat">
+                        <div class="brand-info">
+                            <h2 class="brand-name">Fiat</h2>
+                        </div>
+                    </div>
+                    <div class="brand-card">
+                        <img src="/images/logolar/landrover.png" alt="Land Rover">
+                        <div class="brand-info">
+                            <h2 class="brand-name">Land Rover</h2>
+                        </div>
+                    </div>
+                    <div class="brand-card">
+                        <img src="/images/logolar/mini.png" alt="Mini">
+                        <div class="brand-info">
+                            <h2 class="brand-name">Mini</h2>
+                        </div>
+                    </div>
+                    <div class="brand-card">
+                        <img src="/images/logolar/suzuki.png" alt="Suzuki">
+                        <div class="brand-info">
+                            <h2 class="brand-name">Suzuki</h2>
+                        </div>
+                    </div>
+                    <div class="brand-card">
+                        <img src="/images/logolar/renault.png" alt="Renault">
+                        <div class="brand-info">
+                            <h2 class="brand-name">Renault</h2>
+                        </div>
+                    </div>
+                    <div class="brand-card">
+                        <img src="/images/logolar/peugeot.jpg" alt="Peugeot">
+                        <div class="brand-info">
+                            <h2 class="brand-name">Peugeot</h2>
+                        </div>
+                    </div>
+                    <div class="brand-card">
+                        <img src="/images/logolar/ferrari.png" alt="Ferrari">
+                        <div class="brand-info">
+                            <h2 class="brand-name">Ferrari</h2>
+                        </div>
+                    </div>
+                    <div class="brand-card">
+                        <img src="/images/logolar/lamborghini.jpg" alt="Lamborghini">
+                        <div class="brand-info">
+                            <h2 class="brand-name">Lamborghini</h2>
+                        </div>
+                    </div>
+                    <div class="brand-card">
+                        <img src="/images/logolar/bugatti.png" alt="Bugatti">
+                        <div class="brand-info">
+                            <h2 class="brand-name">Bugatti</h2>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- Footer -->
+            <footer class="footer">
+                <div class="container">
+                    <div class="footer-content">
+                        <div class="footer-section">
+                            <h3>Hakkımızda</h3>
+                            <ul>
+                                <li><a href="#">Şirketimiz</a></li>
+                                <li><a href="#">Kariyer</a></li>
+                                <li><a href="#">İletişim</a></li>
+                            </ul>
+                        </div>
+                        <div class="footer-section">
+                            <h3>Yardım</h3>
+                            <ul>
+                                <li><a href="#">SSS</a></li>
+                                <li><a href="#">Kullanım Koşulları</a></li>
+                                <li><a href="#">Gizlilik Politikası</a></li>
+                            </ul>
+                        </div>
+                        <div class="footer-section">
+                            <h3>Sosyal Medya</h3>
+                            <ul>
+                                <li><a href="#">Facebook</a></li>
+                                <li><a href="#">Twitter</a></li>
+                                <li><a href="#">Instagram</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </main>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kayıt Ol - Araba Marketim</title>
+    <style>
+        :root {
+            --primary-color: #e31837;
+            --secondary-color: #f5f7fa;
+            --text-color: #333;
+            --border-color: #e1e4e8;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px var(--shadow-color);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--primary-color);
+            font-weight: 300;
+            font-size: 2.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-color);
+            font-weight: 500;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="tel"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="password"]:focus,
+        input[type="tel"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .profile-upload {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .profile-image-container {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-bottom: 15px;
+            border: 3px solid var(--primary-color);
+            position: relative;
+        }
+
+        .profile-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-image-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
+            font-size: 14px;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .file-upload {
+            display: flex;
+            flex-direction: column;
+            align-items: start;
+            margin-bottom: 25px;
+        }
+
+        .file-upload label {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .file-upload label:hover {
+            background-color: #c41530;
+        }
+
+        .file-upload input[type="file"] {
+            display: none;
+        }
+
+        .file-name {
+            margin-top: 10px;
+            font-size: 14px;
+            color: var(--text-color);
+        }
+
+        .account-type {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 25px;
+        }
+
+        .account-type label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .account-type input[type="radio"] {
+            margin-right: 8px;
+        }
+
+        .map-placeholder {
+            width: 100%;
+            height: 200px;
+            background-color: var(--secondary-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            margin-bottom: 25px;
+            color: var(--text-color);
+            font-weight: 500;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .checkbox-group input {
+            margin-right: 10px;
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary-color);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #c41530;
+        }
+
+        button[type="submit"]:active {
+            transform: translateY(2px);
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .profile-image-container {
+                width: 120px;
+                height: 120px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Kayıt Ol</h1>
+        <form action="/register" method="POST" id="registrationForm" enctype="multipart/form-data">
+            <div class="profile-upload">
+                <div class="profile-image-container">
+                    <div class="profile-image-placeholder" id="profileImagePreview">
+                        Profil Fotoğrafı Seç
+                    </div>
+                </div>
+                <div class="file-upload">
+                    <label for="profileImage">Fotoğraf Seç</label>
+                    <input type="file" id="profileImage" name="profileImage" accept="image/*" required>
+                    <div id="profileImageName" class="file-name"></div>
+                </div>
+            </div>
+
+            <div class="account-type">
+                <label>
+                    <input type="radio" name="accountType" value="bireysel" checked> Bireysel Hesap
+                </label>
+                <label>
+                    <input type="radio" name="accountType" value="kurumsal"> Kurumsal Hesap
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label for="name">Ad</label>
+                <input type="text" id="name" name="name" required pattern=".*\S.*" title="Bu alan boşluk içeremez">
+            </div>
+
+            <div class="form-group">
+                <label for="surname">Soyad</label>
+                <input type="text" id="surname" name="surname" required pattern=".*\S.*"
+                    title="Bu alan boşluk içeremez">
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required pattern=".*\S.*" title="Bu alan boşluk içeremez">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Parola</label>
+                <input type="password" id="password" name="password" required pattern=".*\S.*"
+                    title="Bu alan boşluk içeremez">
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Telefon</label>
+                <input type="tel" id="phone" name="phone" required pattern=".*\S.*" title="Bu alan boşluk içeremez">
+            </div>
+
+            <div class="form-group">
+                <label for="address">Adres</label>
+                <textarea id="address" name="address" rows="3" required pattern=".*\S.*"
+                    title="Bu alan boşluk içeremez"></textarea>
+            </div>
+
+            <div id="corporateSection" style="display: none;">
+                <div class="file-upload">
+                    <label for="taxPlate">Vergi Levhası Yükle</label>
+                    <input type="file" id="taxPlate" name="taxPlate" accept=".pdf,.jpg,.jpeg,.png">
+                    <div id="taxPlateFileName" class="file-name"></div>
+                </div>
+                <p id="taxPlateWarning" style="color: red; display: none;">Lütfen Vergi Levhası yükleyiniz!</p>
+            </div>
+
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="terms" name="terms" required>
+                <label for="terms">Aydınlatma metnini okudum kabul ediyorum.</label>
+            </div>
+
+            <button type="submit">Kayıt Ol</button>
+        </form>
+    </div>
+
+    <script>
+        const profileImageInput = document.getElementById('profileImage');
+        const profileImagePreview = document.getElementById('profileImagePreview');
+        const profileImageName = document.getElementById('profileImageName');
+        const accountTypeInputs = document.getElementsByName('accountType');
+        const corporateSection = document.getElementById('corporateSection');
+        const taxPlateInput = document.getElementById('taxPlate');
+        const taxPlateFileName = document.getElementById('taxPlateFileName');
+        const registrationForm = document.getElementById('registrationForm');
+        const taxPlateWarning = document.getElementById('taxPlateWarning'); // Warning message for tax plate
+
+        // Handle profile image preview
+        profileImageInput.addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    profileImagePreview.innerHTML = `<img src="${e.target.result}" alt="Profile Image" class="profile-image">`;
+                };
+                reader.readAsDataURL(file);
+                profileImageName.textContent = file.name;
+            } else {
+                profileImagePreview.innerHTML = 'Profil Fotoğrafı Seç';
+                profileImageName.textContent = '';
+            }
+        });
+
+        // Show or hide the corporate section based on account type
+        accountTypeInputs.forEach(input => {
+            input.addEventListener('change', function () {
+                if (this.value === 'kurumsal') {
+                    corporateSection.style.display = 'block';
+                    taxPlateInput.setAttribute('required', 'required'); // Make tax plate required
+                } else {
+                    corporateSection.style.display = 'none';
+                    taxPlateInput.removeAttribute('required'); // Remove required attribute
+                }
+            });
+        });
+
+        // Display selected tax plate file name
+        taxPlateInput.addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                taxPlateFileName.textContent = file.name;
+            } else {
+                taxPlateFileName.textContent = '';
+            }
+        });
+
+        // Form validation on submit
+        registrationForm.addEventListener('submit', function (e) {
+            e.preventDefault(); // Prevent form submission initially
+
+            const accountType = document.querySelector('input[name="accountType"]:checked').value; // Selected account type
+            const taxPlateFile = taxPlateInput.files[0]; // Selected tax plate file
+            let hasError = false;
+
+            // Validate fields for empty spaces (using pattern)
+            const inputs = document.querySelectorAll('#registrationForm input[type="text"], #registrationForm input[type="email"], #registrationForm textarea');
+            inputs.forEach(input => {
+                const trimmedValue = input.value.trim(); // Remove spaces
+                if (!trimmedValue) {
+                    alert(`${input.previousElementSibling.textContent} alanı boş veya sadece boşluk olamaz!`);
+                    hasError = true;
+                }
+            });
+
+            // Check if tax plate file is required for "kurumsal" account type
+            if (accountType === 'kurumsal' && !taxPlateFile) {
+                // If tax plate is required for corporate accounts and not uploaded
+                taxPlateWarning.style.display = 'block'; // Show warning
+                hasError = true;
+            } else {
+                taxPlateWarning.style.display = 'none'; // Hide warning if tax plate is uploaded
+            }
+
+            // If there are errors, prevent form submission
+            if (hasError) {
+                return;
+            }
+
+            // If no errors, proceed with form submission
+            registrationForm.submit();
+        });
+    </script>
+
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,144 @@
+<aside class="filter-panel">
+    <h3>Filtreleme Seçenekleri</h3>
+    <div class="filter-scroll">
+        <!-- Araba Markası -->
+        <div class="filter-category">
+            <h4>Araba Markası</h4>
+            <ul class="filter-list">
+                <% if (brands && brands.length> 0) { %>
+                    <% brands.forEach(brand=> { %>
+                        <li>
+                            <label>
+                                <input type="checkbox" name="brand" value="<%= brand.name %>">
+                                <%= brand.name %>
+                            </label>
+                        </li>
+                        <% }); %>
+                            <% } else { %>
+                                <li>No brands available.</li>
+                                <% } %>
+            </ul>
+        </div>
+
+        <!-- Araç Türü -->
+        <div class="filter-category">
+            <h4>Boyut</h4>
+            <ul class="filter-list">
+                <li>
+                    <label>
+                        <input type="checkbox" name="tyre_size" value="12.0"> 12.0
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="checkbox" name="tyre_size" value="13.0"> 13.0
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="checkbox" name="tyre_size" value="14.0"> 14.0
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="checkbox" name="tyre_size" value="15.0"> 15.0
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="checkbox" name="tyre_size" value="16.0"> 16.0
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="checkbox" name="tyre_size" value="17.0"> 17.0
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="checkbox" name="tyre_size" value="17.5"> 17.5
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="checkbox" name="tyre_size" value="18.0"> 18.0
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="checkbox" name="tyre_size" value="19.0"> 19.0
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="checkbox" name="tyre_size" value="19.5"> 19.5
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="checkbox" name="tyre_size" value="20.0"> 20.0
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="checkbox" name="tyre_size" value="21.0"> 21.0
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="checkbox" name="tyre_size" value="22.0"> 22.0
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="checkbox" name="tyre_size" value="22.5"> 22.5
+                    </label>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Jant Boyutu -->
+        <div class="filter-category">
+            <h4>Mevsim</h4>
+            <ul class="filter-list">
+                <li>
+                    <label>
+                        <input type="checkbox" name="tyre_season" value="4 Mevsim"> 4 Mevsim
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="checkbox" name="tyre_season" value="Yazlık"> Yazlık
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="checkbox" name="tyre_season" value="Kışlık"> Kışlık
+                    </label>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Lastik Boyutu -->
+        <div class="filter-category">
+            <h4>Lastik Boyutu</h4>
+            <ul class="filter-list">
+                <li>
+                    <label>
+                        <input type="checkbox" name="tire_size" value="205/55 R16"> 205/55 R16
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="checkbox" name="tire_size" value="215/65 R16"> 215/65 R16
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="checkbox" name="tire_size" value="225/45 R17"> 225/45 R17
+                    </label>
+                </li>
+            </ul>
+        </div>
+    </div>
+</aside>
