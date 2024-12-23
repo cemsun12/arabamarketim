@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    <link rel="icon" href="/images/mini_logo.png" type="image/x-icon">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>4 Pieces 205/55/16 Pirelli Winter Tires - Almost New</title>
@@ -49,6 +50,16 @@
             text-decoration: underline;
         }
 
+        .description-container {
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            margin-top: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+
         .product-container {
             display: grid;
             grid-template-columns: 2fr 1fr;
@@ -59,6 +70,57 @@
         .product-images {
             position: relative;
         }
+
+        .tabs {
+            margin-bottom: 20px;
+        }
+
+        .tab-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #f1f1f1;
+            border: 1px solid #ccc;
+            border-radius: 4px 4px 0 0;
+            margin-right: 5px;
+        }
+
+        .tab-button.active {
+            background-color: #e31837;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .specs-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .specs-table th,
+        .specs-table td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        .specs-table th {
+            background-color: #f4f4f4;
+        }
+
+        #map {
+            margin-top: 20px;
+            height: 400px;
+            width: 100%;
+        }
+
 
         .main-image {
             width: 100%;
@@ -511,16 +573,22 @@
         <div class="product-container">
             <div class="product-images">
                 <!-- Main Product Image -->
-                <img src="/images/placeholder.png" alt="Ürün Resmi" class="main-image"
-                    data-src="<%= product.imageUrl %>" onload="this.src=this.getAttribute('data-src');"
-                    onerror="this.onerror=null; this.src='/images/placeholder.png';" loading="lazy">
+                <div class="product-main-image">
+                    <img src="<%= product.images[0] || '/images/placeholder.png' %>" alt="Ürün Resmi" class="main-image"
+                        onerror="this.onerror=null; this.src='/images/placeholder.png';" loading="lazy">
+                </div>
+
 
                 <!-- Thumbnail Images -->
                 <div class="thumbnails">
-                    <img src="<%= product.imageUrl || '/placeholder.svg?height=80&width=80' %>" alt="Tire View 1"
-                        class="thumbnail">
+                    <% product.images.forEach((image, index)=> { %>
+                        <img src="<%= image || '/images/bg1.png' %>" alt="Tire View <%= index + 1 %>" class="thumbnail"
+                            onclick="changeMainImage('<%= image %>')">
+                        <% }); %>
                 </div>
             </div>
+
+
 
             <div class="product-info">
                 <% if (seller.fotourl) { %>
@@ -550,7 +618,7 @@
                                     <%= seller.name || 'Unknown' %>
                                 </p>
                                 <p><strong>Konum:</strong>
-                                    <%= product.location || 'Unknown' %>
+                                    <%= product.ilce || 'Unknown' %> / <%= product.il || 'Unknown' %>
                                 </p>
                                 <p><strong>Tarih:</strong>
                                     <%= product.adDate || 'Unknown' %>
@@ -581,72 +649,95 @@
         </div>
 
         <div class="specifications">
-            <h2>Detaylar</h2>
-            <table class="specs-table">
-                <tr>
-                    <th>Fiyat</th>
-                    <td>
-                        <%= product.price || 'Unknown' %> TL
-                    </td>
-                </tr>
-                <tr>
-                    <th>Marka</th>
-                    <td>
-                        <%= product.brand || 'Unknown' %>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Boyut</th>
-                    <td>
-                        <%= product.size || 'Unknown' %>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Durumu</th>
-                    <td>
-                        <%= product.condition || 'Unknown' %>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Türü</th>
-                    <td>
-                        <%= product.type || 'Unknown' %>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Üretim Yılı</th>
-                    <td>
-                        <%= product.productionYear || 'Unknown' %>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Yük İndeksi</th>
-                    <td>
-                        <%= product.loadIndex || 'Unknown' %>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Hız İndeksi</th>
-                    <td>
-                        <%= product.speedIndex || 'Unknown' %>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Takas</th>
-                    <td>
-                        <%= product.exchange || 'Unknown' %>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Kullanım Durumu</th>
-                    <td>
-                        <%= product.usedTyre || 'Unknown' %>
-                    </td>
-                </tr>
-            </table>
 
-            <div id="map" style="height: 400px; width: 100%; margin-top: 20px;"></div>
+
+            <!-- Tabs for different sections -->
+            <div class="tabs">
+                <button class="tab-button active" onclick="showTab('details')">Detaylar</button>
+                <button class="tab-button" onclick="showTab('description')">Açıklama</button>
+            </div>
+
+            <!-- Tab content for details -->
+            <div id="details" class="tab-content active">
+                <table class="specs-table">
+                    <tr>
+                        <th>Fiyat</th>
+                        <td>
+                            <%= product.price || 'Unknown' %> TL
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Marka</th>
+                        <td>
+                            <%= product.brand || 'Unknown' %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Boyut</th>
+                        <td>
+                            <%= product.size || 'Unknown' %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Durumu</th>
+                        <td>
+                            <%= product.condition || 'Unknown' %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Türü</th>
+                        <td>
+                            <%= product.type || 'Unknown' %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Üretim Yılı</th>
+                        <td>
+                            <%= product.productionYear || 'Unknown' %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Yük İndeksi</th>
+                        <td>
+                            <%= product.loadIndex || 'Unknown' %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Hız İndeksi</th>
+                        <td>
+                            <%= product.speedIndex || 'Unknown' %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Takas</th>
+                        <td>
+                            <%= product.exchange || 'Unknown' %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Kullanım Durumu</th>
+                        <td>
+                            <%= product.usedTyre || 'Unknown' %>
+                        </td>
+                    </tr>
+                </table>
+
+                <div id="map" style="height: 400px; width: 100%; margin-top: 20px;"></div>
+            </div>
+
+            <!-- Tab content for description -->
+            <div id="description" class="tab-content">
+                <div class="description-container">
+                    <h3>Açıklama</h3>
+                    <p>
+                        <%= product.description || 'Açıklama mevcut değil.' %>
+                    </p>
+                </div>
+            </div>
+
         </div>
+
+
     </div>
 
 
@@ -654,18 +745,80 @@
     <%- include('footer') %>
 
         <script>
-            // Simple image gallery functionality
-            const thumbnails = document.querySelectorAll('.thumbnail');
-            const mainImage = document.querySelector('.main-image');
+            document.addEventListener('DOMContentLoaded', () => {
+                // Get thumbnail and main image elements
+                const thumbnails = document.querySelectorAll('.thumbnail');
+                const mainImage = document.querySelector('.main-image');
 
-            thumbnails.forEach(thumbnail => {
-                thumbnail.addEventListener('click', () => {
-                    mainImage.src = thumbnail.src.replace('80', '600');
+                console.log("Thumbnails found:", thumbnails.length); // Log the number of thumbnails
+                console.log("Main image element:", mainImage); // Log the main image element
+
+                // Check if thumbnails and mainImage exist
+                if (!mainImage) {
+                    console.error("Main image element not found!");
+                    return;
+                }
+
+                if (thumbnails.length === 0) {
+                    console.error("No thumbnails found!");
+                    return;
+                }
+
+                // Loop through each thumbnail and set click event listener
+                thumbnails.forEach((thumbnail, index) => {
+                    console.log(`Thumbnail ${index + 1}:`, thumbnail.src); // Log the src of each thumbnail
+
+                    thumbnail.addEventListener('click', () => {
+                        console.log(`Thumbnail clicked:`, thumbnail.src); // Log when a thumbnail is clicked
+                        // Update main image source with the clicked thumbnail's src
+                        mainImage.src = thumbnail.src;
+                        console.log("Main image updated to:", mainImage.src); // Log the updated main image src
+                    });
                 });
             });
 
+            function showTab(tabName) {
+                // Hide all tab contents
+                const tabs = document.querySelectorAll('.tab-content');
+                tabs.forEach(tab => {
+                    tab.classList.remove('active');
+                });
+
+                // Remove active class from all tab buttons
+                const buttons = document.querySelectorAll('.tab-button');
+                buttons.forEach(button => {
+                    button.classList.remove('active');
+                });
+
+                // Show the selected tab and set the active button
+                document.getElementById(tabName).classList.add('active');
+                const activeButton = document.querySelector(`.tab-button[onclick="showTab('${tabName}')"]`);
+                activeButton.classList.add('active');
+            }
+
+
+            function changeMainImage(imageUrl) {
+                const mainImage = document.querySelector('.main-image');
+                if (mainImage) {
+                    console.log("Changing main image to:", imageUrl); // Log the new image URL
+                    mainImage.src = imageUrl || '/images/placeholder.png'; // Update the main image source with the clicked thumbnail URL
+                } else {
+                    console.error("Main image element not found!");
+                }
+            }
+
             function initMap() {
-                const location = { lat: 41.0082, lng: 28.9784 }; // Example: Istanbul coordinates
+                // Check if product.location is available
+                const location = {
+                    lat: parseFloat('<%= product.location.latitude %>'), // Replace with product.latitude
+                    lng: parseFloat('<%= product.location.longitude %>') // Replace with product.longitude
+                };
+
+                if (isNaN(location.lat) || isNaN(location.lng)) {
+                    console.error("Invalid location data");
+                    return; // Stop if the location data is not valid
+                }
+
                 const map = new google.maps.Map(document.getElementById("map"), {
                     zoom: 16,
                     center: location,
@@ -677,6 +830,8 @@
                 });
             }
         </script>
+
+
 
         <script async
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBhP60CyBuQgNkoRknONTnLuvcOiZ9RR6U&callback=initMap">

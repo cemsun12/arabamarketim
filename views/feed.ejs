@@ -2,6 +2,7 @@
 <html lang="tr">
 
 <head>
+    <link rel="icon" href="/images/mini_logo.png" type="image/x-icon">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Araba Marketim</title>
@@ -872,12 +873,12 @@
                             <% products.forEach(product=> { %>
                                 <div class="card-product">
                                     <img src="/images/placeholder.png" alt="Ürün Resmi" class="card-product-image"
-                                        data-src="<%= product.imageUrl %>"
+                                        data-src="<%=  product.images[0] %>"
                                         onload="this.src=this.getAttribute('data-src');"
                                         onerror="this.onerror=null; this.src='/images/placeholder.png';" loading="lazy">
                                     <div class="card-product-content">
                                         <h2 class="card-product-title">
-                                            <%= product.brand || 'No Title' %>
+                                            <%= product.title || 'No Title' %>
                                         </h2>
                                         <p class="card-product-info"><strong>Türü:</strong>
                                             <%= product.type || 'Unknown' %>
@@ -889,7 +890,7 @@
                                             <%= product.brand || 'N/A' %>
                                         </p>
                                         <p class="card-product-info"><strong>İl / İlçe:</strong>
-                                            <%= product.location || 'Unknown' %>
+                                            <%= product.ilce || 'Unknown' %> / <%= product.il || 'Unknown' %>
                                         </p>
                                         <p class="card-product-price">Fiyat: <%= product.price || '0' %> TL</p>
                                         <div class="header-buttons">

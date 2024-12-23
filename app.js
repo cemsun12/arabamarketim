@@ -19,6 +19,10 @@ import session from 'express-session';
 import axios from 'axios';
 import fetch from 'node-fetch';
 
+import fs from 'fs';
+import { createReadStream } from 'fs';
+import csvParser from 'csv-parser';
+
 
 const app = express();
 const upload = multer({
@@ -36,7 +40,7 @@ const upload = multer({
 
 // Wrap the upload middleware for error handling
 const uploadHandler = (req, res, next) => {
-    upload.single('image')(req, res, (err) => {
+    upload.array('images', 10)(req, res, (err) => { // 'images' is the field name; limit to 10 files
         if (err instanceof multer.MulterError) {
             // Multer-specific errors
             return res.status(400).send(`Multer Error: ${err.message}`);
@@ -44,9 +48,46 @@ const uploadHandler = (req, res, next) => {
             // Custom errors (like invalid file type)
             return res.status(400).send(`Error: ${err.message}`);
         }
+
+        // Validate file types
+        const allowedTypes = ['image/jpeg', 'image/png'];
+        const invalidFiles = req.files.filter(file => !allowedTypes.includes(file.mimetype));
+
+        if (invalidFiles.length > 0) {
+            return res.status(400).send(`Invalid file types: ${invalidFiles.map(f => f.originalname).join(', ')}`);
+        }
+
         next(); // Proceed to the next middleware if no error
     });
 };
+
+
+let ilIlceData = [];
+
+// Read and parse the CSV file at server startup
+fs.createReadStream('il_ilce.csv') // Path to your CSV file
+    .pipe(csvParser())
+    .on('data', (row) => {
+        ilIlceData.push(row);
+    })
+    .on('end', () => {
+        console.log('CSV file successfully processed');
+    });
+
+// API to get all 'il' options
+app.get('/api/il', (req, res) => {
+    const ils = [...new Set(ilIlceData.map(item => item.il))]; // Extract unique 'il'
+    res.json(ils);
+});
+
+// API to get 'ilce' options based on selected 'il'
+app.get('/api/ilce/:il', (req, res) => {
+    const il = req.params.il;
+    const ilces = ilIlceData
+        .filter(item => item.il === il)
+        .map(item => item.ilce);
+    res.json(ilces);
+});
 
 app.use(session({
     secret: 'asunatech', // Use a secure random key here
@@ -94,7 +135,7 @@ app.post('/register', upload.fields([
     { name: 'profileImage', maxCount: 1 },
     { name: 'taxPlate', maxCount: 1 },
 ]), async (req, res) => {
-    const { name, surname, email, password, phone, address, accountType } = req.body;
+    const { name, surname, email, password, phone, address, accountType, il, ilce } = req.body;
     const profileImage = req.files['profileImage'] ? req.files['profileImage'][0] : null;
     const taxPlate = req.files['taxPlate'] ? req.files['taxPlate'][0] : null;
 
@@ -105,7 +146,7 @@ app.post('/register', upload.fields([
     const trimmedPhone = phone.trim();
     const trimmedPassword = password.trim();
 
-    if (!trimmedName || !trimmedSurname || !trimmedEmail || !trimmedAddress || !trimmedPhone || !trimmedPassword) {
+    if (!trimmedName || !trimmedSurname || !trimmedEmail || !trimmedAddress || !trimmedPhone || !trimmedPassword || !il || !ilce) {
         return res.status(400).send('Tüm alanlar doldurulmalı ve boşluk dışında karakter içermelidir.');
     }
 
@@ -146,7 +187,9 @@ app.post('/register', upload.fields([
             address,
             accountType,
             fotourl,
-            taxPlateURL, // Save the tax plate URL if applicable
+            taxPlateURL,
+            il,
+            ilce,
         });
 
         res.redirect('/');
@@ -253,6 +296,9 @@ app.get("/", async (req, res) => {
             if (product.tarih instanceof Timestamp) {
                 const date = product.tarih.toDate();
                 product.tarih = formatDate(date);
+            }
+            if (!product.images) {
+                product.images = []; // If no images, make it an empty array
             }
             return product;
         });
@@ -463,39 +509,44 @@ app.get('/publish', isAuthenticated, (req, res) => {
 
 app.post('/publish', uploadHandler, async (req, res) => {
     try {
-        // Log the received file and file type
-        console.log('File received:', req.file);
-        console.log('File type:', req.file ? req.file.mimetype : 'No file uploaded');
-
-        // Validate if file is present
-        if (!req.file) {
-            throw new Error('No file uploaded.');
+        // Validate if files are present
+        if (!req.files || req.files.length === 0) {
+            throw new Error('No files uploaded.');
         }
 
-        // Check file type
-        const allowedTypes = ['image/jpeg', 'image/png'];
-        if (!allowedTypes.includes(req.file.mimetype)) {
-            throw new Error('Invalid file type. Only .jpg and .png are allowed.');
-        }
+        const { title, description, category, usage, type, size, brand, productionYear, loadIndex, speedIndex, price, il, ilce, seller, usedTyre, exchange, condition, adNumber, adDate, address } = req.body;
 
-        const { category, usage, type, size, brand, productionYear, loadIndex, speedIndex, price, location, seller, usedTyre, exchange, condition, adNumber, adDate } = req.body;
-
-        const userId = req.session.user ? req.session.user.uid : null;  // Adjust according to your authentication method
-
+        const userId = req.session.user ? req.session.user.uid : null;
         if (!userId) {
             throw new Error('User not authenticated');
         }
 
-        // Step 1: Upload image to Firebase Storage
-        const fileExtension = req.file.mimetype === 'image/png' ? '.png' : '.jpg';
-        const imageRef = ref(storage, `advert_fotos/${uuidv4()}${fileExtension}`);
-        await uploadBytes(imageRef, req.file.buffer);
+        const fullAddress = `${address}, ${il} / ${ilce}`;
 
-        // Step 2: Get image URL
-        const imageUrl = await getDownloadURL(imageRef);
+        const geoLocation = await getGeolocationFromAddress(fullAddress, il, ilce);
 
-        // Step 3: Save data to Firestore
+        // Step 1: Upload all images to Firebase Storage
+        const imageUrls = [];
+        for (const file of req.files) {
+            // Validate file type
+            const allowedTypes = ['image/jpeg', 'image/png'];
+            if (!allowedTypes.includes(file.mimetype)) {
+                throw new Error(`Invalid file type: ${file.originalname}`);
+            }
+
+            const fileExtension = file.mimetype === 'image/png' ? '.png' : '.jpg';
+            const imageRef = ref(storage, `advert_fotos/${uuidv4()}${fileExtension}`);
+            await uploadBytes(imageRef, file.buffer);
+
+            // Get image URL
+            const imageUrl = await getDownloadURL(imageRef);
+            imageUrls.push(imageUrl);
+        }
+
+        // Step 2: Save data to Firestore
         const adData = {
+            title,
+            description,
             category,
             usage,
             type,
@@ -505,27 +556,84 @@ app.post('/publish', uploadHandler, async (req, res) => {
             loadIndex,
             speedIndex,
             price,
-            location,
+            il,
+            ilce,
             seller,
             usedTyre,
             exchange,
             condition,
             adNumber,
             adDate,
-            imageUrl,
+            images: imageUrls, // Store all image URLs as an array
             createdAt: Timestamp.now(),
             userId: userId,
+            address: fullAddress,
+            location: geoLocation,
         };
+
         const adRef = doc(db, 'adverts', uuidv4());
         await setDoc(adRef, adData);
 
-        // Step 4: Redirect on success
+        // Step 3: Redirect on success
         res.redirect('/publish-success');
     } catch (error) {
         console.error("Error in /publish:", error.message);
         res.status(400).send(`Error: ${error.message}`);
     }
+
+    async function getGeolocationFromAddress(address, il, ilce) {
+        const apiKey = 'AIzaSyBhP60CyBuQgNkoRknONTnLuvcOiZ9RR6U';  // Replace with your Google Maps API Key
+
+        // Log the address being sent for geocoding
+        console.log("Geocoding the address:", address);
+
+        // First, try to geocode using the full address
+        let fullAddress = address ? address : `${ilce}, ${il}`;
+        const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(fullAddress)}&key=${apiKey}`;
+
+        try {
+            const response = await axios.get(url);
+            const data = response.data;
+
+            console.log("Geocoding response data:", data); // Log the response data from geocode API
+
+            if (data.status === 'OK') {
+                const location = data.results[0].geometry.location;
+                console.log("Successfully retrieved geolocation:", location); // Log successful location
+                return {
+                    latitude: location.lat,
+                    longitude: location.lng
+                };
+            } else {
+                console.warn(`Unable to retrieve geolocation for address: ${fullAddress}. Trying fallback with ilce/il.`);
+                // Fallback: Try geocoding with ilce (district) and il (city)
+                const fallbackAddress = `${ilce}, ${il}`;
+                const fallbackUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(fallbackAddress)}&key=${apiKey}`;
+
+                const fallbackResponse = await axios.get(fallbackUrl);
+                const fallbackData = fallbackResponse.data;
+
+                console.log("Fallback geocoding response data:", fallbackData); // Log the fallback response data
+
+                if (fallbackData.status === 'OK') {
+                    const location = fallbackData.results[0].geometry.location;
+                    console.log("Successfully retrieved fallback geolocation:", location); // Log successful fallback location
+                    return {
+                        latitude: location.lat,
+                        longitude: location.lng
+                    };
+                } else {
+                    throw new Error('Unable to retrieve geolocation for the fallback address (ilce/il).');
+                }
+            }
+        } catch (error) {
+            console.error("Error fetching geolocation:", error.message);
+            throw new Error('Geolocation service error.');
+        }
+    }
+
 });
+
 
 // Add this route in app.js
 app.get('/product/:adNumber', async (req, res) => {
@@ -541,6 +649,10 @@ app.get('/product/:adNumber', async (req, res) => {
         if (!querySnapshot.empty) {
             const productDoc = querySnapshot.docs[0];
             const product = productDoc.data();
+
+            if (!product.images) {
+                product.images = [];
+            }
 
             // Fetch user data if session exists
             if (req.session.user) {

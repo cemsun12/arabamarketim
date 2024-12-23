@@ -2,6 +2,7 @@
 <html lang="tr">
 
 <head>
+    <link rel="icon" href="/images/mini_logo.png" type="image/x-icon">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lastik İlanı Yayınla</title>
@@ -59,6 +60,48 @@
             margin-bottom: 20px;
         }
 
+        .form-info {
+            display: block;
+            margin-top: 5px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .form-tip {
+            display: block;
+            margin-top: 5px;
+            font-size: 12px;
+            color: #999;
+        }
+
+        input[type="file"] {
+            border: 2px dashed #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            transition: border-color 0.3s;
+        }
+
+        input[type="file"]:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        input[type="file"]::file-selector-button {
+            margin-right: 10px;
+            background-color: #007bff;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        input[type="file"]::file-selector-button:hover {
+            background-color: #0056b3;
+        }
+
+
         label {
             display: block;
             margin-bottom: 5px;
@@ -75,6 +118,59 @@
             border-radius: 5px;
             font-size: 16px;
         }
+
+        .form-group {
+            margin-bottom: 15px;
+            font-family: Arial, sans-serif;
+            margin-right: 20px;
+            /* Right margin for both input and textarea */
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            /* Apply same styles to both input and textarea */
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+            /* Ensure padding is included in the width */
+        }
+
+        .form-group textarea {
+            resize: none;
+            /* Disable resizing */
+            min-height: 100px;
+            /* Minimum height for textarea */
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            /* Focus styles for both input and textarea */
+            outline: none;
+            border-color: #4caf50;
+            /* Green color for focus */
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.2);
+            /* Green glow */
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            /* Placeholder styles for both input and textarea */
+            color: #aaa;
+            font-style: italic;
+        }
+
+
 
         select {
             appearance: none;
@@ -139,6 +235,18 @@
         <form id="adForm" action="/publish" method="POST" enctype="multipart/form-data">
             <div class="step" id="step1">
                 <h2>Adım 1: Temel Bilgiler</h2>
+
+                <div class="form-group">
+                    <label for="title">Başlık:</label>
+                    <input type="text" id="title" name="title" required>
+                </div>
+
+                <!-- Description Field -->
+                <div class="form-group">
+                    <label for="description">Açıklama:</label>
+                    <textarea id="description" name="description" rows="4" required></textarea>
+                </div>
+
                 <div class="form-group">
                     <label for="category">Kategori:</label>
                     <select id="category" name="category" required>
@@ -199,9 +307,24 @@
                     <input type="number" id="price" name="price" value="9750" required>
                 </div>
                 <div class="form-group">
-                    <label for="location">Konum:</label>
-                    <input type="text" id="location" name="location" value="İstanbul / Bakırköy / Cevizlik Mah."
-                        required>
+                    <label for="il">İl</label>
+                    <select id="il" name="il" required>
+                        <option value="" disabled selected>Bir il seçin</option>
+                        <!-- İl options dynamically populated -->
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="ilce">İlçe</label>
+                    <select id="ilce" name="ilce" required>
+                        <option value="" disabled selected>Bir ilçe seçin</option>
+                        <!-- İlçe options dynamically populated -->
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="address">Adres</label>
+                    <input type="text" id="address" name="address" required placeholder="Mahalle Sokak ...">
                 </div>
                 <div class="form-group">
                     <label for="seller">Kimden:</label>
@@ -237,16 +360,20 @@
             <div class="step" id="step4">
                 <h2>Adım 4: Görsel ve Onay</h2>
                 <div class="form-group">
-                    <label for="image">Resim Yükle:</label>
-                    <input type="file" id="image" name="image" accept=".jpg, .jpeg, .png" required />
+                    <label for="images">Resim Yükle:</label>
+                    <small class="form-info">(En az bir tane ve birden fazla fotoğraf yükleyebilirsiniz)</small>
+                    <input type="file" id="images" name="images" accept=".jpg, .jpeg, .png" multiple required />
+                    <small class="form-tip">* Daha iyi sonuçlar için ürününüzü farklı açılardan gösteren fotoğraflar
+                        yükleyin.</small>
                 </div>
+
                 <div class="form-group">
                     <label for="adNumber">İlan No:</label>
                     <input type="text" id="adNumber" name="adNumber" value="1214223395" readonly>
                 </div>
                 <div class="form-group">
                     <label for="adDate">İlan Tarihi:</label>
-                    <input type="text" id="adDate" name="adDate" value="07 Aralık 2024" readonly>
+                    <input type="text" id="adDate" name="adDate" readonly>
                 </div>
             </div>
 
@@ -258,6 +385,71 @@
     </div>
 
     <script>
+
+        function formatDate() {
+            const months = [
+                "Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran",
+                "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"
+            ];
+
+            const today = new Date();
+            const day = today.getDate().toString().padStart(2, '0'); // Adds leading zero if day < 10
+            const month = months[today.getMonth()]; // Get month name from array
+            const year = today.getFullYear(); // Get the current year
+
+            return `${day} ${month} ${year}`;
+        }
+
+        // Set today's date in the input field
+        document.getElementById('adDate').value = formatDate();
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const ilDropdown = document.getElementById('il');
+            const ilceDropdown = document.getElementById('ilce');
+
+            const adNumber = generateRandomAdNumber();
+            // Set the value of the adNumber input field
+            document.getElementById('adNumber').value = adNumber;
+
+            // Populate 'il' dropdown
+            fetch('/api/il')
+                .then(response => response.json())
+                .then(ils => {
+                    ils.forEach(il => {
+                        const option = document.createElement('option');
+                        option.value = il;
+                        option.textContent = il;
+                        ilDropdown.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error fetching il data:', error));
+
+            // Update 'ilce' dropdown based on selected 'il'
+            ilDropdown.addEventListener('change', function () {
+                const selectedIl = this.value;
+
+                // Clear existing 'ilce' options
+                ilceDropdown.innerHTML = '<option value="" disabled selected>Bir ilçe seçin</option>';
+
+                // Fetch ilce options for the selected il
+                fetch(`/api/ilce/${encodeURIComponent(selectedIl)}`)
+                    .then(response => response.json())
+                    .then(ilces => {
+                        ilces.forEach(ilce => {
+                            const option = document.createElement('option');
+                            option.value = ilce;
+                            option.textContent = ilce;
+                            ilceDropdown.appendChild(option);
+                        });
+                    })
+                    .catch(error => console.error('Error fetching ilce data:', error));
+            });
+        });
+
+        function generateRandomAdNumber() {
+            return Math.floor(100000000 + Math.random() * 900000000); // Generates a random 9-digit number
+        }
+
         document.getElementById('adForm').addEventListener('submit', function (event) {
             event.preventDefault(); // Prevent the form from submitting initially
 
