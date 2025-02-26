@@ -117,6 +117,16 @@
             text-decoration: underline;
         }
 
+        .error-message {
+            color: #e74c3c;
+            background-color: #fadbd8;
+            border-left: 4px solid #e74c3c;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -141,8 +151,12 @@
 
                 <label for="password">Parola</label>
                 <input type="password" id="password" name="password" required autocomplete="current-password">
-
-                <button type="submit">Giriş Yap</button>
+                <% if (errorMessage) { %>
+                    <div class="error-message">
+                        <%= errorMessage %>
+                    </div>
+                <% } %>
+                    <button type="submit">Giriş Yap</button>
             </form>
 
             <div class="register">
