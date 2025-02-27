@@ -124,7 +124,11 @@ app.get('/publish-success', (req, res) => {
 });
 
 app.get('/register', (req, res) => {
-    res.render('register');
+    // Pass both errorMessage and empty formData by default
+    res.render('register', { 
+        errorMessage: null,
+        formData: {} // Empty object instead of null
+    });
 });
 
 app.get('/login', (req, res) => {
@@ -195,7 +199,28 @@ app.post('/register', upload.fields([
         res.redirect('/');
     } catch (error) {
         console.error('Error registering:', error.message);
-        res.status(400).send(`Kayıt başarısız: ${error.message}`);
+        
+        // Error handling based on Firebase error codes
+        let errorMessage;
+        switch(error.code) {
+            case 'auth/email-already-in-use':
+                errorMessage = 'Bu e-posta adresi zaten kullanılıyor.';
+                break;
+            case 'auth/invalid-email':
+                errorMessage = 'Geçersiz e-posta formatı.';
+                break;
+            case 'auth/weak-password':
+                errorMessage = 'Şifre çok zayıf. En az 6 karakter kullanın.';
+                break;
+            default:
+                errorMessage = `Kayıt başarısız: ${error.message}`;
+        }
+        
+        // Render the register page with the error message and form data
+        res.render('register', {
+            errorMessage,
+            formData: req.body
+        });
     }
 });
 
@@ -217,7 +242,29 @@ app.post('/login', async (req, res) => {
         res.redirect('/');
     } catch (error) {
         console.error('Error signing in:', error.message);
-        res.send(`<h1>Login Failed: ${error.message}</h1>`);
+        
+        // Instead of redirecting with an HTML message, render the login page with an error
+        let errorMessage;
+        
+        // Customize error messages based on Firebase error codes
+        switch(error.code) {
+            case 'auth/user-not-found':
+                errorMessage = 'Bu e-posta adresi kayıtlı değil.';
+                break;
+            case 'auth/wrong-password':
+                errorMessage = 'Geçersiz şifre.';
+                break;
+            case 'auth/invalid-email':
+                errorMessage = 'Geçersiz e-posta formatı.';
+                break;
+            case 'auth/too-many-requests':
+                errorMessage = 'Çok fazla başarısız giriş denemesi. Lütfen daha sonra tekrar deneyin.';
+                break;
+            default:
+                errorMessage = 'Giriş yapılamadı. Lütfen bilgilerinizi kontrol edin.';
+        }
+        
+        res.render('login', { errorMessage });
     }
 });
 

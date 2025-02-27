@@ -227,6 +227,22 @@
             margin-right: 10px;
         }
 
+        .error-message {
+            color: #e74c3c;
+            background-color: #fadbd8;
+            border-left: 4px solid #e74c3c;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        #profileImageWarning {
+            color: #e31837;
+            margin-top: 5px;
+            font-size: 14px;
+        }
+
         button[type="submit"] {
             width: 100%;
             padding: 14px;
@@ -276,8 +292,9 @@
                 </div>
                 <div class="file-upload">
                     <label for="profileImage">Fotoğraf Seç</label>
-                    <input type="file" id="profileImage" name="profileImage" accept="image/*" required>
+                    <input type="file" id="profileImage" name="profileImage" accept="image/*">
                     <div id="profileImageName" class="file-name"></div>
+                    <div id="profileImageWarning" style="display: none;">Lütfen profil fotoğrafı yükleyiniz!</div>
                 </div>
             </div>
 
@@ -292,18 +309,20 @@
 
             <div class="form-group">
                 <label for="name">Ad</label>
-                <input type="text" id="name" name="name" required pattern=".*\S.*" title="Bu alan boşluk içeremez">
+                <input type="text" id="name" name="name" value="<%= formData ? formData.name : '' %>" required
+                    pattern=".*\S.*" title="Bu alan boşluk içeremez">
             </div>
 
             <div class="form-group">
                 <label for="surname">Soyad</label>
-                <input type="text" id="surname" name="surname" required pattern=".*\S.*"
-                    title="Bu alan boşluk içeremez">
+                <input type="text" id="surname" name="surname" value="<%= formData ? formData.surname : '' %>" required
+                    pattern=".*\S.*" title="Bu alan boşluk içeremez">
             </div>
 
             <div class="form-group">
                 <label for="email">Email</label>
-                <input type="email" id="email" name="email" required pattern=".*\S.*" title="Bu alan boşluk içeremez">
+                <input type="email" id="email" name="email" value="<%= formData ? formData.email : '' %>" required
+                    pattern=".*\S.*" title="Bu alan boşluk içeremez">
             </div>
 
             <div class="form-group">
@@ -314,7 +333,8 @@
 
             <div class="form-group">
                 <label for="phone">Telefon</label>
-                <input type="tel" id="phone" name="phone" required pattern=".*\S.*" title="Bu alan boşluk içeremez">
+                <input type="tel" id="phone" name="phone" value="<%= formData ? formData.phone : '' %>" required
+                    pattern=".*\S.*" title="Bu alan boşluk içeremez">
             </div>
 
             <div class="form-group">
@@ -336,8 +356,8 @@
 
             <div class="form-group">
                 <label for="address">Adres</label>
-                <textarea id="address" name="address" rows="3" required pattern=".*\S.*"
-                    title="Bu alan boşluk içeremez"></textarea>
+                <textarea id="address" name="address" value="<%= formData ? formData.adress : '' %>" rows="3" required
+                    pattern=".*\S.*" title="Bu alan boşluk içeremez"></textarea>
             </div>
 
             <div id="corporateSection" style="display: none;">
@@ -354,8 +374,12 @@
                 <input type="checkbox" id="terms" name="terms" required>
                 <label for="terms">Aydınlatma metnini okudum kabul ediyorum.</label>
             </div>
-
-            <button type="submit">Kayıt Ol</button>
+            <% if (errorMessage) { %>
+                <div class="error-message">
+                    <%= errorMessage %>
+                </div>
+                <% } %>
+                    <button type="submit">Kayıt Ol</button>
         </form>
     </div>
 
@@ -422,8 +446,8 @@
                 reader.readAsDataURL(file);
                 profileImageName.textContent = file.name;
             } else {
-                profileImagePreview.innerHTML = 'Profil Fotoğrafı Seç';
-                profileImageName.textContent = '';
+                document.getElementById('profileImageWarning').style.display = 'block';
+                hasError = true;
             }
         });
 
@@ -456,7 +480,18 @@
 
             const accountType = document.querySelector('input[name="accountType"]:checked').value; // Selected account type
             const taxPlateFile = taxPlateInput.files[0]; // Selected tax plate file
+            const profileImageFile = profileImageInput.files[0]; // Get selected profile image
+
             let hasError = false;
+
+             // Check for profile image
+            if (!profileImageFile) {
+                document.getElementById('profileImageWarning').style.display = 'block';
+                hasError = true;
+            } else {
+                document.getElementById('profileImageWarning').style.display = 'none';
+            }
+            
 
             // Validate fields for empty spaces (using pattern)
             const inputs = document.querySelectorAll('#registrationForm input[type="text"], #registrationForm input[type="email"], #registrationForm textarea');
