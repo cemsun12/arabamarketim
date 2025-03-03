@@ -1,33 +1,32 @@
 <header class="header">
     <div class="container">
         <div class="header-content">
-            <a href="/home" class="logo">arabamarketim.com</a>
+            <a href="/" class="logo">arabamarketim.com</a>
+            
+            <% if (typeof showSearchBar === 'undefined' || showSearchBar === true) { %>
+            <!-- Show search bar only if showSearchBar parameter is true or not defined -->
             <div class="search-bar">
-                <input type="text" placeholder="Marka veya model ara...">
+                <form action="/search" method="GET">
+                    <input type="text" name="q" placeholder="Lastik ara...">
+                    <button type="submit"><i class="fa fa-search"></i></button>
+                </form>
             </div>
-            <div class="header-buttons">
-                <a href="/publish">İlan Ver</a>
-
-            </div>
-
-            <% if (user) { %>
-                <!-- Display profile container if authenticated -->
-                <div class="profile-container">
-                    <button class="profile-icon">
-                        <img src="/images/profile-user.png" alt="Profile Picture" />
-                    </button>
-                    <div class="dropdown">
-                        <a href="#">Bilgilerim</a>
-                        <a href="/logout">Çıkış Yap</a>
-                    </div>
+            <% } %>
+            
+            <div class="profile-container">
+                <button class="profile-icon">
+                    <img src="<%= user.fotourl %>" alt="Profile Picture"
+                        onerror="this.onerror=null; this.src='/images/user.png'">
+                </button>
+                <div class="header-buttons">
+                    <a href="/publish">İlan Ver</a>
                 </div>
-                <% } else { %>
-                    <!-- Display "Giriş Yap/Kayıt Ol" buttons if not authenticated -->
-                    <button onclick="window.location.href='/lander'">Giriş Yap / Kayıt Ol</button>
-                    <% } %>
-
-
+                <div class="dropdown">
+                    <a href="/profile">Bilgilerim</a>
+                    <a href="/my-adverts">İlanlarım</a>
+                    <a href="/logout">Çıkış Yap</a>
+                </div>
+            </div>
         </div>
-
     </div>
 </header>

@@ -5,7 +5,8 @@ import { auth, db, storage } from './firebaseConfig.js';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 
 // Firebase Firestore
-import { doc, setDoc } from 'firebase/firestore';
+// Firebase Firestore
+import { doc, setDoc, deleteDoc } from 'firebase/firestore';
 import { query, where, collection, getDocs, getDoc } from 'firebase/firestore';
 import { Timestamp } from 'firebase/firestore';
 
@@ -132,7 +133,10 @@ app.get('/register', (req, res) => {
 });
 
 app.get('/login', (req, res) => {
-    res.render('login');
+    res.render('login', { 
+        errorMessage: null,
+        formData: {} // Empty object instead of null
+    });
 });
 
 app.post('/register', upload.fields([
@@ -759,9 +763,10 @@ app.get('/profile', isAuthenticated, async (req, res) => {
         // Retrieve the user data from the document
         const userData = userDoc.data();
 
-        // Pass the user data to the profile page
+
+        // Pass both user data and adverts to the profile page
         res.render('my-profile', {
-            user: userData
+            user: userData,
         });
 
     } catch (error) {
@@ -785,6 +790,213 @@ app.get('/filter-adverts', async (req, res) => {
         console.error('Error fetching filtered adverts:', error);
         res.status(500).send('An error occurred while fetching the filtered adverts.');
     }
+});
+
+// Add this route to handle advert deletion
+app.delete('/delete-advert/:adNumber', isAuthenticated, async (req, res) => {
+    try {
+        const adNumber = req.params.adNumber;
+        
+        // Find the advert document by adNumber
+        const advertsRef = collection(db, 'adverts');
+        const q = query(advertsRef, where('adNumber', '==', adNumber));
+        const querySnapshot = await getDocs(q);
+        
+        if (querySnapshot.empty) {
+            return res.status(404).send('İlan bulunamadı');
+        }
+        
+        let advertDoc = null;
+        querySnapshot.forEach((doc) => {
+            advertDoc = doc;
+        });
+        
+        // Check if the advert belongs to the current user
+        const advertData = advertDoc.data();
+        if (advertData.userId !== req.session.user.uid) {
+            return res.status(403).send('Bu işlem için yetkiniz yok');
+        }
+        
+        // Delete the advert
+        await deleteDoc(doc(db, 'adverts', advertDoc.id));
+        
+        res.status(200).send('İlan başarıyla silindi');
+    } catch (error) {
+        console.error('Error deleting advert:', error);
+        res.status(500).send('Server error');
+    }
+});
+
+app.get('/my-adverts', isAuthenticated, async (req, res) => {
+    try {
+        // Get user data for header information
+        const userRef = doc(db, "users", req.session.user.uid);
+        const userDoc = await getDoc(userRef);
+        
+        if (!userDoc.exists()) {
+            return res.status(404).send('User not found');
+        }
+        
+        const userData = userDoc.data();
+        
+        // Fetch user's adverts
+        const advertsRef = collection(db, 'adverts');
+        const q = query(advertsRef, where('userId', '==', req.session.user.uid));
+        const advertsSnapshot = await getDocs(q);
+        
+        // Convert adverts snapshot to array
+        const userAdverts = [];
+        advertsSnapshot.forEach(doc => {
+            userAdverts.push({
+                id: doc.id,
+                ...doc.data()
+            });
+        });
+        
+        res.render('my-adverts', {
+            user: {
+                ...userData,
+                uid: req.session.user.uid,
+                email: req.session.user.email
+            },
+            adverts: userAdverts
+        });
+        
+    } catch (error) {
+        console.error('Error fetching user adverts:', error);
+        res.status(500).send('Server error');
+    }
+});
+
+// Add advert to favorites
+app.post('/add-favorite/:adNumber', isAuthenticated, async (req, res) => {
+  try {
+    const { adNumber } = req.params;
+    const userId = req.session.user.uid;
+    
+    // Reference to the user's favorites collection
+    const userFavoritesRef = doc(db, 'user-favorites', userId);
+    const userFavoritesDoc = await getDoc(userFavoritesRef);
+    
+    let favorites = [];
+    if (userFavoritesDoc.exists()) {
+      favorites = userFavoritesDoc.data().favorites || [];
+    }
+    
+    // Check if advert is already in favorites
+    if (!favorites.includes(adNumber)) {
+      favorites.push(adNumber);
+      
+      // Save or update favorites
+      await setDoc(userFavoritesRef, { favorites }, { merge: true });
+    }
+    
+    res.status(200).json({ success: true });
+  } catch (error) {
+    console.error('Error adding to favorites:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Remove advert from favorites
+app.post('/remove-favorite/:adNumber', isAuthenticated, async (req, res) => {
+  try {
+    const { adNumber } = req.params;
+    const userId = req.session.user.uid;
+    
+    // Reference to the user's favorites collection
+    const userFavoritesRef = doc(db, 'user-favorites', userId);
+    const userFavoritesDoc = await getDoc(userFavoritesRef);
+    
+    if (userFavoritesDoc.exists()) {
+      let favorites = userFavoritesDoc.data().favorites || [];
+      favorites = favorites.filter(id => id !== adNumber);
+      
+      // Update favorites
+      await setDoc(userFavoritesRef, { favorites }, { merge: true });
+    }
+    
+    res.status(200).json({ success: true });
+  } catch (error) {
+    console.error('Error removing from favorites:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// View favorites page
+app.get('/my-favorites', isAuthenticated, async (req, res) => {
+  try {
+    const userId = req.session.user.uid;
+    
+    // Get user data for header
+    const userRef = doc(db, "users", userId);
+    const userDoc = await getDoc(userRef);
+    
+    if (!userDoc.exists()) {
+      return res.status(404).send('User not found');
+    }
+    
+    const userData = userDoc.data();
+    
+    // Get user's favorites
+    const userFavoritesRef = doc(db, 'user-favorites', userId);
+    const userFavoritesDoc = await getDoc(userFavoritesRef);
+    
+    let favoriteAdverts = [];
+    
+    if (userFavoritesDoc.exists()) {
+      const favoriteIds = userFavoritesDoc.data().favorites || [];
+      
+      // If user has favorites, fetch the adverts
+      if (favoriteIds.length > 0) {
+        const advertsRef = collection(db, 'adverts');
+        const q = query(advertsRef, where('adNumber', 'in', favoriteIds));
+        const snapshot = await getDocs(q);
+        
+        favoriteAdverts = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+      }
+    }
+    
+    res.render('my-favorites', {
+      user: {
+        ...userData,
+        uid: userId,
+        email: req.session.user.email
+      },
+      adverts: favoriteAdverts
+    });
+    
+  } catch (error) {
+    console.error('Error fetching favorites:', error);
+    res.status(500).send('Server error');
+  }
+});
+
+// Check if an advert is in user's favorites
+app.get('/check-favorite/:adNumber', isAuthenticated, async (req, res) => {
+  try {
+    const { adNumber } = req.params;
+    const userId = req.session.user.uid;
+    
+    // Reference to the user's favorites collection
+    const userFavoritesRef = doc(db, 'user-favorites', userId);
+    const userFavoritesDoc = await getDoc(userFavoritesRef);
+    
+    let isFavorite = false;
+    
+    if (userFavoritesDoc.exists()) {
+      const favorites = userFavoritesDoc.data().favorites || [];
+      isFavorite = favorites.includes(adNumber);
+    }
+    
+    res.status(200).json({ isFavorite });
+  } catch (error) {
+    console.error('Error checking favorite status:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
 });
 
 const PORT = 3000;

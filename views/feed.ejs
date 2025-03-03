@@ -722,6 +722,47 @@
             background-color: #f5f5f5;
         }
 
+        .tire-info-container {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 15px 0;
+            margin-bottom: 20px;
+        }
+
+        .tire-info-panel {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .tire-info-panel h3 {
+            color: #e31837;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .tire-specs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .tire-spec {
+            background-color: #f1f1f1;
+            border-radius: 30px;
+            padding: 8px 16px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .tire-suggestion {
+            font-size: 14px;
+            color: #666;
+            margin-top: 10px;
+        }
+
 
         /* Responsive Design */
         @media (max-width: 768px) {
@@ -755,6 +796,42 @@
                 margin: 0 5px;
             }
         }
+
+        .favorite-button {
+            background-color: white;
+            color: #e41e26;
+            border: 1px solid #e41e26;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .favorite-button:hover {
+            background-color: #fff3f3;
+        }
+
+        .favorite-button.is-favorite {
+            background-color: #e41e26;
+            color: white;
+        }
+
+        .heart-icon {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .is-favorite .heart-icon {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='currentColor' d='M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z'%3E%3C/path%3E%3C/svg%3E");
+        }
     </style>
 </head>
 
@@ -779,7 +856,7 @@
 
                         </div>
 
-                        <% if (user) { %>
+                        <% if (typeof user !=='undefined' && user) { %>
                             <!-- Display profile container if authenticated -->
                             <div class="profile-container">
                                 <button class="profile-icon">
@@ -787,6 +864,8 @@
                                 </button>
                                 <div class="dropdown">
                                     <a href="/profile">Bilgilerim</a>
+                                    <a href="/my-adverts">İlanlarım</a>
+                                    <a href="/my-favorites">Favorilerim</a>
                                     <a href="/logout">Çıkış Yap</a>
                                 </div>
                             </div>
@@ -794,15 +873,9 @@
                                 <!-- Display "Giriş Yap/Kayıt Ol" buttons if not authenticated -->
                                 <button onclick="window.location.href='/lander'">Giriş Yap / Kayıt Ol</button>
                                 <% } %>
-
-
-
                     </div>
-
                 </div>
             </header>
-
-
 
             <!-- Filters -->
             <section class="filters">
@@ -840,6 +913,18 @@
                     </div>
 
                     <button id="find-tire" disabled>Uygun Lastiği Bul</button>
+                </div>
+            </section>
+
+            <section class="tire-info-container" id="tireInfoContainer" style="display: none;">
+                <div class="container">
+                    <div class="tire-info-panel">
+                        <h3>Aracınız İçin Uygun Lastik Ölçüleri</h3>
+                        <div class="tire-specs" id="tireSpecs">
+                            <!-- Tire specifications will be inserted here -->
+                        </div>
+                        <p class="tire-suggestion">Bu ölçülerde lastikler görüntüleniyor</p>
+                    </div>
                 </div>
             </section>
 
@@ -896,17 +981,16 @@
                                         <div class="header-buttons">
                                             <a href="/product/<%= product.adNumber %>">İlan Detayı</a>
                                         </div>
+                                        <% if (user) { %>
+                                            <button class="favorite-button" data-ad-number="<%= product.adNumber %>">
+                                                <i class="heart-icon"></i>
+                                                Favorilere Ekle
+                                            </button>
+                                            <% } %>
                                     </div>
                                 </div>
                                 <% }); %>
                         </div>
-
-
-
-
-
-
-
                     </section>
 
             </div>
@@ -1107,12 +1191,58 @@
 
 
         });
-
-
-
     </script>
+    <!-- Add this JavaScript code at the end of feed.ejs, before the closing </body> tag -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const favoriteButtons = document.querySelectorAll('.favorite-button');
 
+            favoriteButtons.forEach(button => {
+                button.addEventListener('click', async function (event) {
+                    event.preventDefault();
+                    const adNumber = this.getAttribute('data-ad-number');
+                    const isFavorite = this.classList.contains('is-favorite');
 
+                    try {
+                        const url = isFavorite ? `/remove-favorite/${adNumber}` : `/add-favorite/${adNumber}`;
+                        const method = 'POST';
+
+                        const response = await fetch(url, {
+                            method: method,
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
+
+                        if (response.ok) {
+                            this.classList.toggle('is-favorite');
+                            this.innerHTML = this.classList.contains('is-favorite') ?
+                                '<i class="heart-icon"></i> Favorilerden Çıkar' :
+                                '<i class="heart-icon"></i> Favorilere Ekle';
+                        } else {
+                            console.error('Failed to update favorite status');
+                            alert('Failed to update favorite status. Please try again.');
+                        }
+                    } catch (error) {
+                        console.error('Error updating favorite status:', error);
+                        alert('An error occurred. Please try again.');
+                    }
+                });
+
+                // Check initial favorite status
+                const adNumber = button.getAttribute('data-ad-number');
+                fetch(`/check-favorite/${adNumber}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.isFavorite) {
+                            button.classList.add('is-favorite');
+                            button.innerHTML = '<i class="heart-icon"></i> Favorilerden Çıkar';
+                        }
+                    })
+                    .catch(error => console.error('Error checking favorite status:', error));
+            });
+        });
+    </script>
 </body>
 
 </html>
