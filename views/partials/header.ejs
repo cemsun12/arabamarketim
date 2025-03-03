@@ -1,0 +1,40 @@
+<!-- In header.ejs -->
+<header class="header">
+    <div class="container">
+        <div class="header-content">
+            <!-- Logo on the left -->
+            <a href="/" class="logo">arabamarketim.com</a>
+            
+            <!-- Right side elements grouped -->
+            <div class="header-right">
+                <!-- Search bar (optional) -->
+                <% if (typeof showSearchBar === 'undefined' || showSearchBar === true) { %>
+                <div class="search-bar">
+                    <input type="text" placeholder="Lastik ara...">
+                </div>
+                <% } %>
+                
+                <!-- Profile or Login button -->
+                <% if (user) { %>
+                <div class="header-buttons">
+                    <a href="/publish">İlan Ver</a>
+                </div>
+                <div class="profile-container">
+                    <button class="profile-icon">
+                        <img src="<%= user.fotourl %>" alt="Profile Picture"
+                            onerror="this.onerror=null; this.src='/images/user.png'">
+                    </button>
+                    <div class="dropdown">
+                        <a href="/profile">Bilgilerim</a>
+                        <a href="/my-adverts">İlanlarım</a>
+                        <a href="/my-favorites">Favorilerim</a>
+                        <a href="/logout">Çıkış Yap</a>
+                    </div>
+                </div>
+                <% } else { %>
+                <button onclick="window.location.href='/lander'">Giriş Yap / Kayıt Ol</button>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</header>
