@@ -403,6 +403,125 @@
             grid-column: span 2;
         }
 
+        /* User Adverts Section */
+        .profile-section {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-section h2 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #333;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .user-adverts {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        @media (min-width: 768px) {
+            .user-adverts {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .advert-card {
+            display: flex;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .advert-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .advert-image {
+            width: 120px;
+            min-width: 120px;
+            height: 120px;
+        }
+
+        .advert-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .advert-details {
+            padding: 15px;
+            flex-grow: 1;
+        }
+
+        .advert-details h3 {
+            font-size: 16px;
+            margin: 0 0 8px 0;
+        }
+
+        .advert-details p {
+            margin: 4px 0;
+            font-size: 14px;
+        }
+
+        .advert-actions {
+            display: flex;
+            margin-top: 10px;
+            gap: 8px;
+        }
+
+        .view-button,
+        .edit-button,
+        .delete-button,
+        .publish-button {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .view-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+        }
+
+        .edit-button {
+            background-color: #2196F3;
+            color: white;
+            border: none;
+        }
+
+        .delete-button {
+            background-color: #f44336;
+            color: white;
+            border: none;
+        }
+
+        .publish-button {
+            background-color: #e31837;
+            color: white;
+            padding: 8px 16px;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .no-adverts {
+            padding: 30px;
+            text-align: center;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+
         @media (max-width: 768px) {
             .container {
                 flex-direction: column;
@@ -524,6 +643,7 @@
                 </div>
             </div>
 
+
             <!-- Address Section -->
             <div class="card">
                 <div class="card-header">
@@ -563,7 +683,42 @@
     </div>
 </body>
 
+<script>
+    // Set up delete button functionality
+    document.querySelectorAll('.delete-button').forEach(button => {
+        button.addEventListener('click', async function () {
+            const adNumber = this.getAttribute('data-ad-number');
+            if (confirm('Bu ilanı kaldırmak istediğinizden emin misiniz?')) {
+                try {
+                    const response = await fetch(`/delete-advert/${adNumber}`, {
+                        method: 'DELETE'
+                    });
 
+                    if (response.ok) {
+                        // Remove the advert card from the UI
+                        this.closest('.advert-card').remove();
+
+                        // If no more adverts, show the "no adverts" message
+                        if (document.querySelectorAll('.advert-card').length === 0) {
+                            const userAdverts = document.querySelector('.user-adverts');
+                            userAdverts.innerHTML = `
+                                <div class="no-adverts">
+                                    <p>Henüz ilan yayınlamadınız.</p>
+                                    <a href="/publish" class="publish-button">İlan Ver</a>
+                                </div>
+                            `;
+                        }
+                    } else {
+                        alert('İlan silinirken bir hata oluştu.');
+                    }
+                } catch (error) {
+                    console.error('Error deleting advert:', error);
+                    alert('İlan silinirken bir hata oluştu.');
+                }
+            }
+        });
+    });
+</script>
 
 
 </html>
